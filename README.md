@@ -1,3 +1,18 @@
+## 重要通知:
+引用少年歌行的一句话:
+
+神仙们的理念不同而已，
+
+凡人们没必要一直炒起热度。
+
+等大家不上头了，
+
+才能看到未来。
+
+安静是当下最好的支持。
+
+防走丢:https://t.me/jdscrip
+
 ## Special statement:
 
 * Any unlocking and decryption analysis scripts involved in the Script project released by this warehouse are only used for testing, learning and research, and are forbidden to be used for commercial purposes. Their legality, accuracy, completeness and effectiveness cannot be guaranteed. Please make your own judgment based on the situation. .
