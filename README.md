@@ -23,7 +23,8 @@ ql repo https://github.com/shufflewzc/faker2.git "jd_|jx_|getJDCookie" "activity
 【DOCKER npm依赖安装命令】
 
 docker exec -it QL bash -c "cd scripts && npm i -S png-js"
-防走丢:https://t.me/jdscrip
+
+* 防走丢:https://t.me/jdscrip
 
 ## Special statement:
 
