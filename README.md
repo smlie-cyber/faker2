@@ -1,8 +1,8 @@
 ## 重要通知
 为有牺牲多壮志，敢教日月换新天。
 
-搬运工回来了。目前本仓库在lxk的基础上，增加了全网各类脚本。
-在lxk备份脚本基础上增加以下内容
+Faker维护仓库，收集全网目前能正常使用的脚本。
+在lxk备份脚本基础上增加以下内容，并不断更新
 * 1、签到领现金-助力
 * 2、极速版 旺财乐园
 * 3、明月寒大佬的 京喜财富岛-娱乐中心-抽奖
@@ -11,6 +11,18 @@
 * 6、整点京豆雨
 * 7、点点券二代目
 * 8、赚京豆
+* 9、欧洲杯
+* 10、全民运动会互助
+* 11、汪汪乐园每日助力
+* 12、燃动夏季（先运行解密 再运行脚本）
+* 13、签到图形验证
+
+【Faker集合仓库】
+ql repo https://github.com/shufflewzc/faker2.git "jd_|jx_|getJDCookie" "activity|backUp" "^jd[^_]|USER"
+
+【DOCKER npm依赖安装命令】
+
+docker exec -it QL bash -c "cd scripts && npm i -S png-js"
 防走丢:https://t.me/jdscrip
 
 ## Special statement:
