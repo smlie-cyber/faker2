@@ -1,8 +1,8 @@
-/**
- *  燃动夏季
- *  25 0,6-23/3 * * *
- *  脚本会助力作者百元守卫战 参数helpAuthorFlag 默认助力
- * */
+/*
+  燃动夏季
+  25 0,6-23/3 * * *
+  脚本会助力作者百元守卫战 参数helpAuthorFlag 默认助力
+ */
 const $ = new Env('燃动夏季');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
