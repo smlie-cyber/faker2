@@ -3,7 +3,7 @@
 更新时间：2021-7-8
 30 6 * * * https://raw.githubusercontent.com/cdle/jd_study/main/jd_goodMorning.js
 */
-const $ = Env("早起福利")
+const $ = new Env("早起福利")
 const ua = `jdltapp;iPhone;3.1.0;${Math.ceil(Math.random()*4+10)}.${Math.ceil(Math.random()*4)};${randomString(40)}`
 let cookiesArr = []
 let cookie = ''
