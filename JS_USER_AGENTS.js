@@ -89,5 +89,4 @@ const USER_AGENT = USER_AGENTS[randomNumber(0, USER_AGENTS.length)];
 
 module.exports = {
   USER_AGENT
-  USER_AGENT,HelloWorld: true
 }
