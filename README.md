@@ -16,6 +16,9 @@ Faker维护仓库，收集全网目前能正常使用的脚本。
 * 11、汪汪乐园每日助力
 * 12、燃动夏季（先运行解密 再运行脚本）
 * 13、签到图形验证
+* 14、宠汪汪二代目（需要安装npm依赖）
+* 15、来客有礼&送豆得豆
+* 16、早起福利
 
 【Faker集合仓库】
 ql repo https://github.com/shufflewzc/faker2.git "jd_|jx_|getJDCookie" "activity|backUp" "^jd[^_]|USER"
