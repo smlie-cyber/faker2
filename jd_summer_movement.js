@@ -1,8 +1,17 @@
 /*
-  燃动夏季
-  25 0,6-23/3 * * *
-  脚本会助力作者百元守卫战 参数helpAuthorFlag 默认助力
- */
+星系牧场
+活动入口：QQ星儿童牛奶京东自营旗舰店->星系牧场
+每次都要手动打开才能跑 不知道啥问题
+
+ 19.0复制整段话 http:/J7ldD7ToqMhRJI星系牧场养牛牛，可获得DHA专属奶！%VAjYb8me2b!→去猄倲←
+ 
+https://lzdz-isv.isvjcloud.com/dingzhi/qqxing/pasture/activity?activityId=90121061401&lng=107.146935&lat=33.255252&sid=cad74d1c843bd47422ae20cadf6fe5aw&un_area=8_573_6627_52446
+更新地址：https://raw.githubusercontent.com/Wenmoux/scripts/wen/jd/jd_ddnc_farmpark.js
+============Quantumultx===============
+[task_local]
+#
+30 7 * * * https://raw.githubusercontent.com/Wenmoux/scripts/wen/jd/jd_qqxing.js, tag=星系牧场, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+*/
 const $ = new Env('燃动夏季');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
