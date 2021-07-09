@@ -15,7 +15,7 @@ const exec = require('child_process').execSync
 const fs = require('fs')
 const download = require('download');
 let resultPath = "./result.txt";
-let JD_DailyBonusPath = "./jd_fakersign.js";
+let JD_DailyBonusPath = "./shufflewzc_faker2_jd_fakersign.js";
 let outPutUrl = './';
 let NodeSet = 'CookieSet.json';
 let cookiesArr = [], cookie = '', allMessage = '';
