@@ -1,8 +1,9 @@
 ## 重要通知
-为有牺牲多壮志，敢教日月换新天。
+### 薄雷收淡雨，雌蜺映雄虹。云拥奇峰出，霞飞散绮红。
 
 Faker维护仓库，收集全网目前能正常使用的脚本。
 在lxk备份脚本基础上增加以下内容，并不断更新
+
 * 1、签到领现金-助力
 * 2、极速版 旺财乐园
 * 3、明月寒大佬的 京喜财富岛-娱乐中心-抽奖
@@ -19,13 +20,24 @@ Faker维护仓库，收集全网目前能正常使用的脚本。
 * 14、宠汪汪二代目（需要安装npm依赖）
 * 15、来客有礼&送豆得豆
 * 16、早起福利
+* 17、QQ星系牧场
+* 18、抢京豆
+* 19、签到领现金兑换
+* 20、百元守卫战助力
+* 21、京东试用
+* 22、修复宠汪汪积分兑换（需要安装canvas依赖）
+* 23、柠檬推一推
+* 24、京东众筹许愿池
 
 【Faker集合仓库】
-ql repo https://github.com/shufflewzc/faker2.git "jd_|jx_|getJDCookie" "activity|backUp" "^jd[^_]|USER"
+ql repo https://ghproxy.com/https://github.com/shufflewzc/faker2.git "jd_|jx_|getJDCookie" "activity|backUp" "^jd[^_]|USER"
 
 【DOCKER npm依赖安装命令】
 
 docker exec -it QL bash -c "cd scripts && npm i -S png-js"
+
+【canvas 依赖安装命令】
+docker exec -it QL bash -c "apk add --no-cache build-base g++ cairo-dev pango-dev giflib-dev && cd scripts && npm install canvas --build-from-source"
 
 * 防走丢:https://t.me/jdscrip
 
