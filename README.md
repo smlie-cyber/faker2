@@ -28,6 +28,8 @@ Faker维护仓库，收集全网目前能正常使用的脚本。
 * 22、修复宠汪汪积分兑换（需要安装canvas依赖）
 * 23、柠檬推一推
 * 24、京东众筹许愿池
+* 25、修复了多合一签到脚本
+* 26、京东到家果园任务
 
 【Faker集合仓库】
 ql repo https://ghproxy.com/https://github.com/shufflewzc/faker2.git "jd_|jx_|getJDCookie" "activity|backUp" "^jd[^_]|USER"
