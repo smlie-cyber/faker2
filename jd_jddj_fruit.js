@@ -1,3 +1,4 @@
+const $ = new Env('京东到家果园任务');
 let isNotify = true;//是否通知,仅限nodejs
 let ckPath = './jdCookie.js';//ck路径,环境变量:JDDJ_CKPATH
 const $ = new API("jd_jddj_fruit");
