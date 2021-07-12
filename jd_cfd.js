@@ -6,7 +6,7 @@ cron 12 0,6-23/2 * * *
 
 */
 
-
+const $ = new Env('faker仓库财富岛');
 const {format} = require('date-fns');
 const axios = require('axios');
 // import USER_AGENT from './TS_USER_AGENTS';
