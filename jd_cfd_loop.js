@@ -1,5 +1,6 @@
-/**
- * 财富岛热气球挂后台
+/*
+
+cron 0 * * * jd_cfd_loop.js
  */
 
 const {format} = require('date-fns');
