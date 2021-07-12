@@ -1,6 +1,6 @@
 /*
 
-cron 1 7,12,19 * * * jd_cfd.js
+cron 0 * * * jd_cfd.js
  */
 
 const {format} = require('date-fns');
