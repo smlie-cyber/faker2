@@ -30,9 +30,18 @@ Faker维护仓库，收集全网目前能正常使用的脚本。
 * 24、京东众筹许愿池
 * 25、修复了多合一签到脚本
 * 26、京东到家果园任务
+* 27、愤怒的锦鲤（需添加环境变量export kois="pt_pin1@pt_pin2"）
+* 28、天天优惠大乐透
+* 29、新版财富岛（需要安装依赖）（cron已自动设置）
+* 30、新版财富岛热气球（cron已自动设置）
+* 31、宠汪汪偷好友积分助力
+
 
 【Faker集合仓库】
-ql repo https://ghproxy.com/https://github.com/shufflewzc/faker2.git "jd_|jx_|getJDCookie" "activity|backUp" "^jd[^_]|USER"
+ql repo https://ghproxy.com/https://github.com/shufflewzc/faker2.git "jd_|jx_|getJDCookie" "activity|backUp" "^jd[^_]|USER|ZooFaker_Necklace|JDJRValidator_Pure"
+
+【财富岛依赖安装命令】
+docker exec -it QL bash -c "npm install axios date-fns"
 
 【DOCKER npm依赖安装命令】
 
@@ -40,6 +49,17 @@ docker exec -it QL bash -c "cd scripts && npm i -S png-js"
 
 【canvas 依赖安装命令】
 docker exec -it QL bash -c "apk add --no-cache build-base g++ cairo-dev pango-dev giflib-dev && cd scripts && npm install canvas --build-from-source"
+
+【圈x订阅地址】
+
+https://ghproxy.com/https://raw.githubusercontent.com/shufflewzc/faker/main/qx.json
+
+【QX系列教程】
+https://www.notion.so/Quantumult-X-cd78c6ab616e4ebf947519b2dd690a0c
+
+【青龙系列教程】
+https://www.notion.so/Cent-OS-7-6-1c598629675145988b43a37998a1604a
+
 
 * 防走丢:https://t.me/jdscrip
 
