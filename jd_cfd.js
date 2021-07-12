@@ -3,31 +3,33 @@
  * 包含雇佣导游，建议每小时1次
  */
 
-import {format} from 'date-fns';
-import axios from 'axios';
-import USER_AGENT from './TS_USER_AGENTS';
-
+const {format} = require('date-fns');
+const axios = require('axios');
+// import USER_AGENT from './TS_USER_AGENTS';
+const USER_AGENT = require('./USER_AGENTS').USER_AGENT;
 const CryptoJS = require('crypto-js')
 
-let appId: number = 10028, fingerprint: string | number, token: string, enCryptMethodJD: any;
-let cookie: string = '', cookiesArr: Array<string> = [], res: any = '', shareCodes: Array<string>;
+let appId = 10028, fingerprint, token, enCryptMethodJD;
+let cookie= '', cookiesArr= [], res = '', shareCodes = [];
 
-let UserName: string, index: number, isLogin: boolean, nickName: string
+let UserName, index, isLogin, nickName;
 !(async () => {
   await requestAlgo();
   await requireConfig();
 
   for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
-    UserName = decodeURIComponent(cookie.match(/pt_pin=([^;]*)/)![1])
+    UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
     index = i + 1;
     isLogin = true;
     nickName = '';
     await TotalBean();
     console.log(`\n开始【京东账号${index}】${nickName || UserName}\n`);
 
+    await makeShareCodes();
+
     // 任务1
-    let tasks: any
+    let tasks;
     /*
      tasks= await api('story/GetActTask', '_cfd_t,bizCode,dwEnv,ptag,source,strZone')
     for (let t of tasks.Data.TaskList) {
@@ -54,10 +56,13 @@ let UserName: string, index: number, isLogin: boolean, nickName: string
 
     // 导游
     res = await api('user/EmployTourGuideInfo', '_cfd_t,bizCode,dwEnv,ptag,source,strZone')
+    if (!res.TourGuideList) {
+        console.log('账号尚未完成新手指引，跳过账号')
+        continue
+    }
     for (let e of res.TourGuideList) {
-      console.log(e.dwIsUnLock, e.strGuideName)
       if (e.strBuildIndex !== 'food' && e.ddwRemainTm === 0) {
-        let employ: any = await api('user/EmployTourGuide', '_cfd_t,bizCode,ddwConsumeCoin,dwEnv,dwIsFree,ptag,source,strBuildIndex,strZone',
+        let employ = await api('user/EmployTourGuide', '_cfd_t,bizCode,ddwConsumeCoin,dwEnv,dwIsFree,ptag,source,strBuildIndex,strZone',
           {ddwConsumeCoin: e.ddwCostCoin, dwIsFree: 0, strBuildIndex: e.strBuildIndex})
         console.log(employ)
         await wait(3000)
@@ -101,23 +106,40 @@ let UserName: string, index: number, isLogin: boolean, nickName: string
       await wait(1000)
     }
   }
+  // if (cookiesArr.length === shareCodes.length) {
+    
+  // }
+  for (let i = 0; i < cookiesArr.length; i++) {
+      for (let j = 0; j < shareCodes.length; j++) {
+        cookie = cookiesArr[i]
+        res = await api('story/helpbystage', '_cfd_t,bizCode,dwEnv,ptag,source,strShareId,strZone', {strShareId: shareCodes[j]})
+        console.log(res)
+        await wait(1000)
+        if (Number(res.iRet) === 2235) {
+            console.log('当前账号没有助力次数了')
+            continue
+        }
+      }
+    }
 })()
 
-interface Params {
-  strBuildIndex?: string,
-  ddwCostCoin?: number,
-  taskId?: number,
-  dwType?: string,
-  configExtra?: string,
-  strStoryId?: string,
-  triggerType?: number,
-  ddwTriggerDay?: number,
-  ddwConsumeCoin?: number,
-  dwIsFree?: number,
+// interface Params {
+//   strBuildIndex?: string,
+//   ddwCostCoin?: number,
+//   taskId?: number,
+//   dwType?: string,
+//   configExtra?: string,
+//   strStoryId?: string,
+//   triggerType?: number,
+//   ddwTriggerDay?: number,
+//   ddwConsumeCoin?: number,
+//   dwIsFree?: number,
+//   ddwTaskId?: string,
+//   strShareId?: string,
+//   strMarkList?: string
+// }
 
-}
-
-function api(fn: string, stk: string, params: Params = {}) {
+function api(fn, stk, params = {}) {
   return new Promise(async resolve => {
     let url = `https://m.jingxi.com/jxbfd/${fn}?strZone=jxbfd&bizCode=jxbfd&source=jxbfd&dwEnv=7&_cfd_t=${Date.now()}&ptag=&_ste=1&_=${Date.now()}&sceneval=2&_stk=${encodeURIComponent(stk)}`
     if (['GetUserTaskStatusList', 'Award', 'DoTask'].includes(fn)) {
@@ -125,7 +147,8 @@ function api(fn: string, stk: string, params: Params = {}) {
       url = `https://m.jingxi.com/newtasksys/newtasksys_front/${fn}?strZone=jxbfd&bizCode=jxbfddch&source=jxbfd&dwEnv=7&_cfd_t=${Date.now()}&ptag=&_stk=${encodeURIComponent(stk)}&_ste=1&_=${Date.now()}&sceneval=2`
     }
     if (Object.keys(params).length !== 0) {
-      let key: (keyof Params)
+      let key;
+      
       for (key in params) {
         if (params.hasOwnProperty(key))
           url += `&${key}=${params[key]}`
@@ -144,11 +167,11 @@ function api(fn: string, stk: string, params: Params = {}) {
   })
 }
 
-function mainTask(fn: string, stk: string, params: Params = {}) {
+function mainTask(fn, stk, params) {
   return new Promise(async resolve => {
     let url = `https://m.jingxi.com/newtasksys/newtasksys_front/${fn}?strZone=jxbfd&bizCode=jxbfd&source=jxbfd&dwEnv=7&_cfd_t=${Date.now()}&ptag=&_stk=${encodeURIComponent(stk)}&_ste=1&_=${Date.now()}&sceneval=2`
     if (Object.keys(params).length !== 0) {
-      let key: (keyof Params)
+      let key;
       for (key in params) {
         if (params.hasOwnProperty(key))
           url += `&${key}=${params[key]}`
@@ -165,6 +188,15 @@ function mainTask(fn: string, stk: string, params: Params = {}) {
       }
     })
     resolve(data)
+  })
+}
+
+function makeShareCodes() {
+  return new Promise(async resolve => {
+    res = await api('user/QueryUserInfo', '_cfd_t,bizCode,ddwTaskId,dwEnv,ptag,source,strShareId,strZone', {ddwTaskId: '', strShareId: '', strMarkList: 'undefined'})
+    console.log('助力码:', res.strMyShareId)
+    shareCodes.push(Math.random() > 0.5 ? res.strMyShareId : '9BA4E10331B63F7501C7F9F00889E35CC648012DEAD86B71DB3EAC56591A2AFB')
+    resolve()
   })
 }
 
@@ -206,9 +238,10 @@ async function requestAlgo() {
   })
 }
 
-function decrypt(stk: string, url: string) {
+function decrypt(stk, url) {
   const timestamp = (format(new Date(), 'yyyyMMddhhmmssSSS'))
-  let hash1: string;
+  // console.log(timestamp, 'timestamp')
+  let hash1;
   if (fingerprint && token && enCryptMethodJD) {
     hash1 = enCryptMethodJD(token, fingerprint.toString(), timestamp.toString(), appId.toString(), CryptoJS).toString(CryptoJS.enc.Hex);
   } else {
@@ -219,7 +252,7 @@ function decrypt(stk: string, url: string) {
     const str = `${token}${fingerprint}${timestamp}${appId}${random}`;
     hash1 = CryptoJS.SHA512(str, token).toString(CryptoJS.enc.Hex);
   }
-  let st: string = '';
+  let st = '';
   stk.split(',').map((item, index) => {
     st += `${item}:${getQueryString(url, item)}${index === stk.split(',').length - 1 ? '' : '&'}`;
   })
@@ -228,7 +261,7 @@ function decrypt(stk: string, url: string) {
 }
 
 function requireConfig() {
-  return new Promise<void>(resolve => {
+  return new Promise(resolve => {
     console.log('开始获取配置文件\n')
     const jdCookieNode = require('./jdCookie.js');
     Object.keys(jdCookieNode).forEach((item) => {
@@ -242,7 +275,7 @@ function requireConfig() {
 }
 
 function TotalBean() {
-  return new Promise<void>(async resolve => {
+  return new Promise(async resolve => {
     axios.get('https://me-api.jd.com/user_new/info/GetJDUserInfoUnion', {
       headers: {
         Host: "me-api.jd.com",
@@ -282,15 +315,15 @@ function generateFp() {
   return (i + Date.now()).slice(0, 16)
 }
 
-function getQueryString(url: string, name: string) {
+function getQueryString(url, name) {
   let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
   let r = url.split('?')[1].match(reg);
   if (r != null) return unescape(r[2]);
   return '';
 }
 
-function wait(t: number) {
-  return new Promise<void>(resolve => {
+function wait(t) {
+  return new Promise(resolve => {
     setTimeout(() => {
       resolve()
     }, t)

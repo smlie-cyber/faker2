@@ -2,16 +2,16 @@
  * 财富岛热气球挂后台
  */
 
-import {format} from 'date-fns';
-import axios from 'axios';
-import USER_AGENT from './TS_USER_AGENTS';
+const {format} = require('date-fns');
+const axios = require('axios');
+const USER_AGENT = require('./USER_AGENTS').USER_AGENT;
 
 const CryptoJS = require('crypto-js')
 
-let appId: number = 10028, fingerprint: string | number, token: string, enCryptMethodJD: any;
-let cookie: string = '', cookiesArr: Array<string> = [], res: any = '';
+let appId = 10028, fingerprint, token, enCryptMethodJD;
+let cookie = '', cookiesArr = [], res = '';
 
-let UserName: string, index: number, isLogin: boolean, nickName: string
+let UserName, index, isLogin, nickName;
 !(async () => {
   await requestAlgo();
   await requireConfig();
@@ -20,7 +20,7 @@ let UserName: string, index: number, isLogin: boolean, nickName: string
     try {
       for (let i = 0; i < cookiesArr.length; i++) {
         cookie = cookiesArr[i];
-        UserName = decodeURIComponent(cookie.match(/pt_pin=([^;]*)/)![1])
+        UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
         index = i + 1;
         isLogin = true;
         nickName = '';
@@ -29,8 +29,9 @@ let UserName: string, index: number, isLogin: boolean, nickName: string
 
         res = await speedUp('_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone')
         console.log(res)
+        if(Number(res.iRet) !== 0) continue
         console.log('今日热气球:', res.dwTodaySpeedPeople, '/', 20)
-        let shell: any = await speedUp('_cfd_t,bizCode,dwEnv,ptag,source,strZone')
+        let shell = await speedUp('_cfd_t,bizCode,dwEnv,ptag,source,strZone')
         for (let s of shell.Data.NormShell) {
           for (let j = 0; j < s.dwNum; j++) {
             await speedUp('_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone', s.dwType)
@@ -46,9 +47,9 @@ let UserName: string, index: number, isLogin: boolean, nickName: string
   }
 })()
 
-function speedUp(stk: string, dwType?: number) {
+function speedUp(stk, dwType) {
   return new Promise(async resolve => {
-    let url: string = `https://m.jingxi.com/jxbfd/user/SpeedUp?strZone=jxbfd&bizCode=jxbfd&source=jxbfd&dwEnv=7&_cfd_t=${Date.now()}&ptag=&strBuildIndex=food&_ste=1&_=${Date.now()}&sceneval=2&_stk=${encodeURIComponent(stk)}`
+    let url = `https://m.jingxi.com/jxbfd/user/SpeedUp?strZone=jxbfd&bizCode=jxbfd&source=jxbfd&dwEnv=7&_cfd_t=${Date.now()}&ptag=&strBuildIndex=food&_ste=1&_=${Date.now()}&sceneval=2&_stk=${encodeURIComponent(stk)}`
     if (stk === '_cfd_t,bizCode,dwEnv,ptag,source,strZone')
       url = `https://m.jingxi.com/jxbfd/story/queryshell?strZone=jxbfd&bizCode=jxbfd&source=jxbfd&dwEnv=7&_cfd_t=${Date.now()}&ptag=&_stk=_cfd_t%2CbizCode%2CdwEnv%2Cptag%2Csource%2CstrZone&_ste=1&_=${Date.now()}&sceneval=2`
     if (stk === '_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone')
@@ -104,9 +105,9 @@ async function requestAlgo() {
   })
 }
 
-function decrypt(stk: string, url: string) {
+function decrypt(stk, url) {
   const timestamp = (format(new Date(), 'yyyyMMddhhmmssSSS'))
-  let hash1: string;
+  let hash1;
   if (fingerprint && token && enCryptMethodJD) {
     hash1 = enCryptMethodJD(token, fingerprint.toString(), timestamp.toString(), appId.toString(), CryptoJS).toString(CryptoJS.enc.Hex);
   } else {
@@ -117,7 +118,7 @@ function decrypt(stk: string, url: string) {
     const str = `${token}${fingerprint}${timestamp}${appId}${random}`;
     hash1 = CryptoJS.SHA512(str, token).toString(CryptoJS.enc.Hex);
   }
-  let st: string = '';
+  let st = '';
   stk.split(',').map((item, index) => {
     st += `${item}:${getQueryString(url, item)}${index === stk.split(',').length - 1 ? '' : '&'}`;
   })
@@ -126,7 +127,7 @@ function decrypt(stk: string, url: string) {
 }
 
 function requireConfig() {
-  return new Promise<void>(resolve => {
+  return new Promise(resolve => {
     console.log('开始获取配置文件\n')
     const jdCookieNode = require('./jdCookie.js');
     Object.keys(jdCookieNode).forEach((item) => {
@@ -140,7 +141,7 @@ function requireConfig() {
 }
 
 function TotalBean() {
-  return new Promise<void>(async resolve => {
+  return new Promise(async resolve => {
     axios.get('https://me-api.jd.com/user_new/info/GetJDUserInfoUnion', {
       headers: {
         Host: "me-api.jd.com",
@@ -180,15 +181,15 @@ function generateFp() {
   return (i + Date.now()).slice(0, 16)
 }
 
-function getQueryString(url: string, name: string) {
+function getQueryString(url, name) {
   let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
   let r = url.split('?')[1].match(reg);
   if (r != null) return unescape(r[2]);
   return '';
 }
 
-function wait(t: number) {
-  return new Promise<void>(resolve => {
+function wait(t) {
+  return new Promise(resolve => {
     setTimeout(() => {
       resolve()
     }, t)
