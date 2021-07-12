@@ -1,6 +1,8 @@
 /**
  * 京喜财富岛
  * 包含雇佣导游，建议每小时1次
+ cron 0 0 0/1 * *
+
  */
 
 const {format} = require('date-fns');
