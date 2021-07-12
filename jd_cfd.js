@@ -1,10 +1,7 @@
 /*
 
-
-
-cron 12 0,6-23/2 * * * 
-
-*/
+cron 1 7,12,19 * * * jd_cfd.js
+ */
 
 const {format} = require('date-fns');
 const axios = require('axios');
