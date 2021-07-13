@@ -1,20 +1,7 @@
 /*
 京享值PK
-cron 15 2,7,18 * * * jd_joyscore.js
-更新时间：2021-7-05
-活动入口：京东APP-我的-京享值
-已支持IOS双京东账号,Node.js支持N个京东账号
-更新日志：直接延时，调整逻辑顺序，增加是否开宝箱选项。默认关闭
-建议：12点过后运行一次，半小时后再运行一次。没有提交自己分享码将无法获取其他人的分享码。0-18时每2小时运行一次
-脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
-============Quantumultx===============
-[task_local]
-#京享值PK
-5,30 0-18/2 * * * https://raw.githubusercontent.com/hyzaw/scripts/main/ddo_pk.js, tag=京享值PK
-================Loon==============
-[Script]
-cron "5,30 0-18/2 * * *" script-path=https://raw.githubusercontent.com/hyzaw/scripts/main/ddo_pk.js,tag=京享值PK
-===============Surge=================
+cron 15 2,7,18 * * * jd_joy_score.js
+
 */
 
 const $ = new Env('京享值PK');
