@@ -1,6 +1,6 @@
 /*
 
-20 0,20 * * * jd_necklace.js
+20 0,20 * * * jd_necklace_new.js
 
  */
 const $ = new Env('点点券二代目');
