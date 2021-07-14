@@ -56,10 +56,10 @@ $.appId = 10032;
   }
   // 助力
   let res = [], res2 = [];
-  $.innerInviteList = await getAuthorShareCode('https://raw.githubusercontent.com/smiek2221/updateTeam/master/areCodes/wealth_island_code_one.json');
-  res2 = await getAuthorShareCode('https://raw.githubusercontent.com/smiek2221/updateTeam/master/areCodes/wealth_island_code.json');
   $.InviteLists = []
   if (HelpAuthorFlag) {
+    $.innerInviteList = await getAuthorShareCode('https://raw.githubusercontent.com/smiek2221/updateTeam/master/shareCodes/wealth_island_code_one.json');
+    res2 = await getAuthorShareCode('https://raw.githubusercontent.com/smiek2221/updateTeam/master/shareCodes/wealth_island_code.json');
     $.innerInviteLists = getRandomArrayElements([...res, ...res2], [...res, ...res2].length);
     $.InviteLists.push(...$.InviteList,...$.innerInviteList,...$.innerInviteLists);
   }else{
@@ -79,7 +79,7 @@ $.appId = 10032;
         console.log(`助力成功: 获得${res.Data && res.Data.GuestPrizeInfo && res.Data.GuestPrizeInfo.strPrizeName || ''}`)
       }else if(res && res.sErrMsg){
         console.log(res.sErrMsg)
-        if(res.sErrMsg.indexOf('助力次数达到上限') > -1){
+        if(res.sErrMsg.indexOf('助力次数达到上限') > -1 || res.iRet === 2232 || res.sErrMsg.indexOf('助力失败') > -1){
           break
         }
       }else{
@@ -130,7 +130,7 @@ async function run() {
         let additional = `&strBuildIndex=${item.strBuildIndex}`
         let stk= `_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone`
         let GetBuildInfo = await taskGet(`user/GetBuildInfo`, stk, additional)
-        let msg = `[${title}] 当前等级:${item.dwLvl} 可升级次数:${item.dwCanLvlUp} 接待收入:${item.ddwOneceVistorAddCoin} 座位人数:${item.ddwOneceVistorAddCoin}`
+        let msg = `[${title}] 当前等级:${item.dwLvl} 可升级次数:${item.dwCanLvlUp} 接待收入:${item.ddwOneceVistorAddCoin} 座位人数:${item.dwContain}`
         if(GetBuildInfo) msg += ` 升级->需要金币:${GetBuildInfo.ddwNextLvlCostCoin} 获得财富:${GetBuildInfo.ddwLvlRich}`
         console.log(msg)
         await $.wait(1000)
@@ -208,6 +208,18 @@ async function run() {
         }
       }
     }
+    if($.Aggrtask && $.Aggrtask.Data && $.Aggrtask.Data.Employee && $.Aggrtask.Data.Employee.EmployeeList){
+      for(let i of $.Aggrtask.Data.Employee.EmployeeList){
+        if(i.dwStatus == 0){
+          let res = await taskGet(`story/helpdraw`, '_cfd_t,bizCode,dwEnv,dwUserId,ptag,source,strZone', `&ptag=&dwUserId=${i.dwId}`)
+          if(res && res.iRet ==0){
+            console.log(`领取邀请奖励:${res.Data && res.Data.ddwCoin || 0}金币`)
+          }else{
+            conso.log(`领取失败:${JSON.stringify(res)}`)
+          }
+        }
+      }
+    }
     // pickshell dwType 1珍珠 2海螺 3大海螺  4海星
     // let b = (item.targetTimes-item.completedTimes)
     let b = 4
@@ -220,7 +232,7 @@ async function run() {
       do{
         console.log(`去捡${name}第${o}次`)
         o++;
-        let res = await taskGet(`story/pickshell`, '_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone', `&ptag=&dwType=${b}`)
+        let res = await taskGet(`story/pickshell`, '_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone', `&ptag=&dwType=${i}`)
         await $.wait(200)
         if(res.iRet != 0){
           break
@@ -228,19 +240,27 @@ async function run() {
       }while (o < 20)
     }
 
-    
     await $.wait(1000)
     $.Biztask = await taskGet(`story/GetActTask`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', '&ptag=')
-    if($.Biztask && $.Biztask.Data && $.Biztask.Data.TaskList){
+    if($.Biztask && $.Biztask.Data){
+      if($.Biztask.Data.dwStatus == 3 && $.Biztask.Data.dwTotalTaskNum && $.Biztask.Data.dwCompleteTaskNum && $.Biztask.Data.dwTotalTaskNum == $.Biztask.Data.dwCompleteTaskNum){
+        res = await taskGet(`story/ActTaskAward`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone', `&ptag=`)
+        if(res.ret == 0){
+          console.log(`领取全部任务奖励:`, res.data.ddwBigReward || '')
+        }else{
+          console.log(`领取全部任务奖励失败:`, JSON.stringify(res))
+        }
+      }
       for(let i in $.Biztask.Data.TaskList){
         let item = $.Biztask.Data.TaskList[i]
+        if(item.dwAwardStatus != 2 && item.dwCompleteNum === item.dwTargetNum) continue
         console.log(`去做任务 ${item.strTaskName},${item.dwAwardStatus},${item.dwOrderId},${item.dwCompleteNum},${item.dwTargetNum}`)
         if (item.dwAwardStatus == 2 && item.dwCompleteNum === item.dwTargetNum) {
           res = await taskGet(`Award`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.ddwTaskId}`)
           if(res.ret == 0){
             console.log(`${item.strTaskName} 领取奖励:`, res.data.prizeInfo)
           }else{
-            console.log(`${item.strTaskName} 领取奖失败:`, JSON.stringify(res))
+            console.log(`${item.strTaskName} 领取奖励失败:`, JSON.stringify(res))
           }
           await $.wait(1000)
         }
@@ -263,26 +283,26 @@ async function run() {
             if(res.ret == 0){
               console.log(`${item.strTaskName} 领取奖励:`, res.data.prizeInfo)
             }else{
-              console.log(`${item.strTaskName} 领取奖失败:`, JSON.stringify(res))
+              console.log(`${item.strTaskName} 领取奖励失败:`, JSON.stringify(res))
             }
             await $.wait(1000)
           }
         }
       }
     }
-
     await $.wait(1000)
     $.task = await taskGet(`GetUserTaskStatusList`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', '&ptag=&taskId=0')
     if($.task && $.task.data && $.task.data.userTaskStatusList){
       for(let i in $.task.data.userTaskStatusList){
         let item = $.task.data.userTaskStatusList[i]
+        if(item.awardStatus != 2 && item.completedTimes === item.targetTimes) continue
         console.log(`去做任务 ${item.taskName},${item.dateType},${item.awardStatus},${item.orderId},${item.completedTimes},${item.targetTimes}`)
         if (item.awardStatus == 2 && item.completedTimes === item.targetTimes) {
           res = await taskGet(`Award`, '_cfd_t,bizCode,dwEnv,ptag,source,strZone,taskId', `&ptag=&taskId=${item.taskId}`)
           if(res.ret == 0){
             console.log(`${item.taskName} 领取奖励:`, res.data.prizeInfo)
           }else{
-            console.log(`${item.taskName} 领取奖失败:`, JSON.stringify(res))
+            console.log(`${item.taskName} 领取奖励失败:`, JSON.stringify(res))
           }
           await $.wait(1000)
         }
@@ -299,7 +319,7 @@ async function run() {
             if(res.ret == 0){
               console.log(`${item.taskName} 领取奖励:`, res.data.prizeInfo)
             }else{
-              console.log(`${item.taskName} 领取奖失败:`, JSON.stringify(res))
+              console.log(`${item.taskName} 领取奖励失败:`, JSON.stringify(res))
             }
           }else if(item.awardStatus === 2 && [1].includes(item.orderId)){
           }
@@ -315,7 +335,6 @@ async function run() {
   catch (e) {
     console.log(e);
   }
-
 }
 async function GetHomePageInfo() {
   let additional= `&ddwTaskId&strShareId&strMarkList=guider_step%2Ccollect_coin_auth%2Cguider_medal%2Cguider_over_flag%2Cbuild_food_full%2Cbuild_sea_full%2Cbuild_shop_full%2Cbuild_fun_full%2Cmedal_guider_show%2Cguide_guider_show%2Cguide_receive_vistor`
@@ -393,8 +412,13 @@ function getGetRequest(type, stk='', additional='') {
   let stks = ''
   if(stk) stks = `&_stk=${stk}`
   let url = `https://m.jingxi.com/jxbfd/${type}?strZone=jxbfd&bizCode=jxbfd&source=jxbfd&dwEnv=7&_cfd_t=${Date.now()}&ptag=${additional}${stks}&_=${Date.now()}&sceneval=2`;
-  if(type == 'GetUserTaskStatusList' || type == 'Award' || type == 'DoTask'){
-    url = `https://m.jingxi.com/newtasksys/newtasksys_front/${type}?strZone=jxbfd&bizCode=jxbfd&source=jxbfd&dwEnv=3&_cfd_t=${Date.now()}${additional}${stks}&_ste=1&_=${Date.now()}&sceneval=2&g_login_type=1`
+  if(type == 'GetUserTaskStatusList' || type == 'Award' || type == 'Award1' || type == 'DoTask'){
+    let bizCode = 'jxbfd'
+    if(type == 'Award1'){
+      bizCode = 'jxbfddch'
+      type == 'Award'
+    }
+    url = `https://m.jingxi.com/newtasksys/newtasksys_front/${type}?strZone=jxbfd&bizCode=${bizCode}&source=jxbfd&dwEnv=3&_cfd_t=${Date.now()}${additional}${stks}&_ste=1&_=${Date.now()}&sceneval=2&g_login_type=1`
   }
   url += `&h5st=${decrypt(Date.now(), stk, '', url)}`;
   return {
