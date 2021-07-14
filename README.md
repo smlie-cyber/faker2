@@ -104,13 +104,11 @@ https://www.notion.so/Cent-OS-7-6-1c598629675145988b43a37998a1604a
 
 
 * [@NobyDa](https://github.com/NobyDa)
-
 * [@chavyleung](https://github.com/chavyleung)
-
 * [@liuxiaoyucc](https://github.com/liuxiaoyucc)
-
 * [@Zero-S1](https://github.com/Zero-S1)
-
 * [@uniqueque](https://github.com/uniqueque)
-
 * [@nzw9314](https://github.com/nzw9314)
+* [@Andy Woo](https://t.me/update_help_group)「青龙2.8互助研究院支持」
+* [@Oreo](https://github.com/Oreomeow) 「青龙2.8一键配置」
+
