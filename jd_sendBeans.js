@@ -1,8 +1,8 @@
 /*
-* 来客有礼小程序
-* cron 45 4 * * * jd_sendBeans.js
-* 至少需要11个ck
-* */
+
+45 4 * * * jd_sendBeans.js
+
+ */
 const $ = new Env('送豆得豆');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
