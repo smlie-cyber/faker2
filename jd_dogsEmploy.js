@@ -1,8 +1,8 @@
 /*
-汪汪乐园开工位，依次助力，支持nodejs
-兼容京东jdCookie.js
-一次性脚本，用完删除
-tg学习交流群https://t.me/cdles
+
+#口袋书店
+1 8,12,18 * * *  jd_dogsEmploy.js
+
 */
 const $ = Env("dogs_employ")
 const ua = `jdltapp;iPhone;3.1.0;${Math.ceil(Math.random()*4+10)}.${Math.ceil(Math.random()*4)};${randomString(40)}`

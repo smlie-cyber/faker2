@@ -1,13 +1,7 @@
 /*
-入口 京东众筹 许愿池 
-====================
-新手上路勿黑勿喷
-TG通知群 https://t.me/ningmeng999
-微信公众号:柠檬玩机交流
 
-[task_local]
-#柠檬许愿池 
-0 8,12 * * * 
+0 8,12 * * *  jd_wish.js
+
 */
 const $ = new Env('柠檬众筹许愿池');
 const notify = $.isNode() ? require("./sendNotify") : "";

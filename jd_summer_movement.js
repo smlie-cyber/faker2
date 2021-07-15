@@ -1,9 +1,9 @@
-/**
- *  燃动夏季
- *  25 0,6-23/2 * * *
- *  脚本会助力作者百元守卫战 参数helpAuthorFlag 默认助力
- *  百元守卫战,先脚本内互助，多的助力会助力作者
- * */
+/*
+
+ 
+ 25 0,6-23/2 * * * jd_summer_movement.js
+
+  */
 const $ = new Env('燃动夏季');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';

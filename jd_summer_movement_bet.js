@@ -1,10 +1,8 @@
-/**
- *  燃动夏季下注
- *  注意：每个奖品会花费200币下注，不想下注的人不要跑这个脚本
- *  若想下满注则设置环境变量 MAX_BET=true 前提：需要账号已经开通店铺会员
- *  每日20点开奖，脚本会自动开奖，
- *  cron  11 12,20 * * *
- * */
+/*
+
+cron  11 12,20 * * * jd_summer_movement_bet.js
+
+*/
 const $ = new Env('燃动夏季下注');
 //环境变量是否下满注，false否，true是，（满注20次，前提：需要已经开过会员卡，若未开同会员，则只能下3注）
 const maxBet =  $.isNode() ? (process.env.MAX_BET ? process.env.MAX_BET : false):false;

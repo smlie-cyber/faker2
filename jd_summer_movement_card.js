@@ -1,9 +1,9 @@
-/**
- *  燃动夏季领会员奖励
- *  每日跑一次，尝试领取会员奖励
- *  如果你已经是会员，则会领取奖励成功，若不是会员，则需要手动卡开
- *  cron 10 8 * * *
- * */
+/*
+
+cron 10 8 * * * jd_summer_movement_card.js
+
+
+ */
 const $ = new Env('燃动夏季领会员奖励');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';

@@ -1,28 +1,8 @@
 /*
-Last Modified time: 2020-12-26 22:58:02
-东东工厂，不是京喜工厂
-活动入口：京东APP首页-数码电器-东东工厂
-免费产生的电量(10秒1个电量，500个电量满，5000秒到上限不生产，算起来是84分钟达到上限)
-故建议1小时运行一次
-开会员任务和去京东首页点击“数码电器任务目前未做
-不会每次运行脚本都投入电力
-只有当心仪的商品存在，并且收集起来的电量满足当前商品所需电力，才投入
-已支持IOS双京东账号,Node.js支持N个京东账号
-脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
-============Quantumultx===============
-[task_local]
+
 #东东工厂
-10 * * * * jd_jdfactory.js, tag=东东工厂, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_factory.png, enabled=true
+10 * * * * jd_jdfactory.js
 
-================Loon==============
-[Script]
-cron "10 * * * *" script-path=jd_jdfactory.js,tag=东东工厂
-
-===============Surge=================
-东东工厂 = type=cron,cronexp="10 * * * *",wake-system=1,timeout=3600,script-path=jd_jdfactory.js
-
-============小火箭=========
-东东工厂 = type=cron,script-path=jd_jdfactory.js, cronexpr="10 * * * *", timeout=3600, enable=true
  */
 const $ = new Env('东东工厂');
 
