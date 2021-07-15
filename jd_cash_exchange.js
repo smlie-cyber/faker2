@@ -1,8 +1,7 @@
 /*
 签到领现金兑换
-需要填写exchangeAccounts参数，兑换多少取决于账号
-TG学习交流群https://t.me/cdles
-0 0 * * * https://raw.githubusercontent.com/cdle/jd_study/main/jd_cash_exchange.js
+
+0 0 * * * jd_cash_exchange.js
 */
 const $ = Env("签到领现金兑换")
 const ua = `jdltapp;iPhone;3.1.0;${Math.ceil(Math.random()*4+10)}.${Math.ceil(Math.random()*4)};${randomString(40)}`

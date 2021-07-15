@@ -1,25 +1,9 @@
 /*
-口袋书店
-更新时间：2021-06-26 
-加了一个码,修复需要手动打开的问题
-活动入口：京东app首页-京东图书-右侧口袋书店
-已支持IOS双京东账号,Node.js支持N个京东账号
-脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
-============Quantumultx===============
-[task_local]
+
 #口袋书店
-1 8,12,18 * * *  https://raw.githubusercontent.com/Wenmoux/scripts/wen/jd/chinnkarahoi_jd_bookshop.js, tag=口袋书店, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+1 8,12,18 * * *  jd_bookshop.js
 
-================Loon==============
-[Script]
-cron "1 8,12,18 * * *" script-path= https://raw.githubusercontent.com/Wenmoux/scripts/wen/jd/chinnkarahoi_jd_bookshop.js,tag=口袋书店
-
-===============Surge=================
-口袋书店 = type=cron,cronexp="1 8,12,18 * * *",wake-system=1,timeout=3600,script-path= https://raw.githubusercontent.com/Wenmoux/scripts/wen/jd/chinnkarahoi_jd_bookshop.js
-
-============小火箭=========
-口袋书店 = type=cron,script-path= https://raw.githubusercontent.com/Wenmoux/scripts/wen/jd/chinnkarahoi_jd_bookshop.js, cronexpr="1 8,12,18* * *", timeout=3600, enable=true
- */
+*/
 const $ = new Env('口袋书店');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
