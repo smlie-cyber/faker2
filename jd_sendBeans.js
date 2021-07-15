@@ -2,7 +2,7 @@
 
 45 4 * * * jd_sendBeans.js
 
- */
+*/
 const $ = new Env('送豆得豆');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';

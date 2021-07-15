@@ -1,18 +1,13 @@
 /*
-入口 极速版 旺财乐园 
-分享到QQ查看邀请码 inviter就是
-或者运行脚本查看邀请码
+
 #自定义邀请码变量 
-开地随机取15个 
-每日邀请任务随机取5个
-====================
-新手上路勿黑勿喷
-TG通知群 https://t.me/ningmeng999
-微信公众号:柠檬玩机交流
+export joyinviterPin="" //IANWqUmbgQVF9ePHGsGFA2m-zSTLKmHFbE-IW-Waarw
+
+5 * * * * jd_joy-park.js
+
 */
-// [task_local]
-// #柠檬旺财乐园
-// 0 */1 * * * 
+
+
 
 const $ = new Env('柠檬旺财乐园新手上路版');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -21,15 +16,13 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
-let tytpacketId = '';
+
 let codeList = []
 let codeList1 = []
-if (process.env.tytpacketId) {
-  tytpacketId = process.env.tytpacketId;
-}
-let inviterPin = '';
-if (process.env.inviterPin) {
-  inviterPin = process.env.inviterPin;
+
+let joyinviterPin = '';
+if (process.env.joyinviterPin) {
+  joyinviterPin = process.env.joyinviterPin;
 }
 
 
@@ -389,16 +382,16 @@ headers: {
                        await dotask(ll1taskType,ll1signtaskid,"https://pro.m.jd.com/jdlite/active/4AMo3SQzbqAzJgowhXqvt8Dpo8iA/index.html") 
                        await apTaskDrawAward(ll1taskType,ll1signtaskid,"https://pro.m.jd.com/jdlite/active/4AMo3SQzbqAzJgowhXqvt8Dpo8iA/index.html")
                        $.log(`\n===============邀请任务===============`)
-                       $.log(`\n===============取随机CK邀请===========`)
-                       for (let i = 0; i < 5; i++) {
+                       
+                      
                        await inviteType()
-                       }
+                       await apTaskinviter()
+                       
                        $.log(`\n===============开地邀请===============`)
-                       $.log(`\n===============取随机CK邀请===========`)
-                       for (let i = 0; i < 15; i++) {
+                      
                        await openinvite()
-                       }
-                       }else  if(data.errMsg == "操作失败"){
+                       //$.log(`\n===============升级奖励===============`)
+                       //await levelDrawAward()
                 
                     console.log("操作失败")
                 
@@ -417,12 +410,12 @@ function openinvite() {
                 let options = {
     url: `https://api.m.jd.com/`,
 
-    body: `functionId=joyBaseInfo&body={"taskId":"","inviteType":"2","inviterPin":"${yqm}","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625540360946&appid=activities_platform`,
+    body: `functionId=joyBaseInfo&body={"taskId":"","inviteType":"2","inviterPin":"${joyinviterPin}","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625540360946&appid=activities_platform`,
 headers: {
 "Origin": "https://joypark.jd.com",
 "Host": "api.m.jd.com",
 "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36",
-      "Cookie": ck2,
+      "Cookie": cookie,
       }
                 }
       
@@ -460,12 +453,12 @@ function inviteType() {
                 let options = {
     url: `https://api.m.jd.com/`,
 
-    body: `functionId=joyBaseInfo&body={"taskId":"167","inviteType":"1","inviterPin":"${yqm}","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625540360946&appid=activities_platform`,
+    body: `functionId=joyBaseInfo&body={"taskId":"167","inviteType":"1","inviterPin":"${joyinviterPin}","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625540360946&appid=activities_platform`,
 headers: {
 "Origin": "https://joypark.jd.com",
 "Host": "api.m.jd.com",
 "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36",
-      "Cookie": ck2,
+      "Cookie": cookie,
       }
                 }
       
@@ -487,6 +480,49 @@ headers: {
                 }else  if(data.success == false){
                 
                     console.log(data.errMsg+"或者你的CK不足")
+                
+                }
+            } catch (e) {
+                $.logErr(e, resp);
+            } finally {
+                resolve();
+            }
+        });
+    });
+}
+function levelDrawAward() {
+    return new Promise(async (resolve) => {
+
+                let options = {
+    url: `https://api.m.jd.com/`,
+
+    body: `functionId=joyBaseInfo&body={"taskId":"167","inviteType":"1","inviterPin":"${yqm}","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625545015696&appid=activities_platform`,
+headers: {
+"Origin": "https://joypark.jd.com",
+"Host": "api.m.jd.com",
+"User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36",
+      "Cookie": cookie,
+      }
+                }
+      
+        $.post(options, async (err, resp, data) => {
+             //$.log(data) 
+            try {
+
+                    data = JSON.parse(data);
+
+                    
+                    
+                    if(data.success == true){
+                      
+                    
+                    $.log(data.errMsg)
+                        
+                    
+       
+                }else  if(data.success == false){
+                
+                    console.log(data.errMsg)
                 
                 }
             } catch (e) {
@@ -542,6 +578,47 @@ headers: {
         });
     });
 }
+//functionId=joyBaseInfo&body={"taskId":"167","inviteType":"1","inviterPin":"IANWqUmbgQVF9ePHGsGFA2m-zSTLKmHFbE-IW-Waarw","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625543629130&appid=activities_platform
+function apTaskinviter() {
+    return new Promise(async (resolve) => {
+
+                let options = {
+    url: `https://api.m.jd.com/`,
+
+    body: `functionId=joyBaseInfo&body={"taskId":"167","inviteType":"1","inviterPin":"${yqm}","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625543629130&appid=activities_platform`,
+headers: {
+"Origin": "https://joypark.jd.com",
+"Host": "api.m.jd.com",
+"User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36",
+      "Cookie": cookie,
+      }
+                }
+      
+        $.post(options, async (err, resp, data) => {
+            try {
+
+                    data = JSON.parse(data);
+
+                    
+                    
+                    if(data.success == true){
+                      data.errMsg
+                      
+       
+                }else  if(data.success == false){
+                
+                    console.log(data.errMsg)
+                
+                }
+            } catch (e) {
+                $.logErr(e, resp);
+            } finally {
+                resolve();
+            }
+        });
+    });
+}
+
 function apTaskDrawAward(taskType,taskid) {
     return new Promise(async (resolve) => {
 
