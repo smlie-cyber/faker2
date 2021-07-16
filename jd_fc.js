@@ -79,13 +79,13 @@ function info() {
     return new Promise(async (resolve) => {
 
                 let options = {
-    url: `https://api.m.jd.com/?functionId=openRedEnvelopeInteract&body={"linkId":"yMVR-_QKRd2Mq27xguJG-w"}&t=1626358531348&appid=activities_platform&clientVersion=3.5.6`,
+    url: `https://api.m.jd.com/?functionId=redEnvelopeInteractHome&body={"linkId":"yMVR-_QKRd2Mq27xguJG-w"}&t=1626358531348&appid=activities_platform&clientVersion=3.5.6`,
 
-    //body: `{"activeId":"A_112790_R_1_D_20201028","refid":"wojing","lkEPin":"${pink}","token":"AAFguxKvADBobq66W4IJvXqvty5l_OLH9MzDgGudMbfKCqDOfRznQ7agP8JaBeMo06pYCflk8I4","source":"wojing","scene":"3"}`,
+   
 headers: {
 "Origin": "https://618redpacket.jd.com",
 "Host": "api.m.jd.com",
-      "User-Agent": "jdltapp;iPhone;3.3.6;14.3;75aeceef3016d8ce11d354ff89af9517a2e4aa18;network/wifi;hasUPPay/0;pushNoticeIsOpen/0;lang/zh_CN;model/iPhone9,2;addressid/;hasOCPay/0;appBuild/1060;supportBestPay/0;pv/56.42;apprpd/;ref/JDLTSubMainPageViewController;psq/38;ads/;psn/15aeceef3046d8ce11d354ff89af9517a2e4aa18|99;jdv/0|kong|t_1001003207_1762319_6901310|jingfen|31578707801140d09fcd54e5cd83bbf7|1621510932517|1621511027;adk/;app_device/IOS;pap/JA2020_3112531|3.3.6|IOS 14.3;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+      "User-Agent": "User-Agent: Mozilla/5.0 (Linux; U; Android 8.0.0; zh-cn; Mi Note 2 Build/OPR1.170623.032) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/61.0.3163.128 Mobile Safari/537.36 XiaoMi/MiuiBrowser/10.1.1",
       "Cookie": cookie,
       }
                 }
@@ -99,7 +99,7 @@ headers: {
                    
                     if(data.code == 0){
                       
-                       console.log('你的活动ID：'+data.data.redEnvelopeId+'\n你的邀请码:'+data.data.markedPin)
+                       console.log(`export redEnvelopeId="${data.data.redEnvelopeId}"\nexport inviter="${data.data.markedPin}"`)
 
                 }
             } catch (e) {
