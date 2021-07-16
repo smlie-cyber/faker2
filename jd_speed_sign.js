@@ -1,7 +1,7 @@
 /*
 
 #京东极速版
-5 7,11,15,17 * * *jd_speed_sign.js
+cron 5 7,11,15,17 * * * jd_speed_sign.js
 
  */
 
