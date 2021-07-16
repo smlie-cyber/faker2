@@ -6,7 +6,7 @@ export inviter="" ##邀请码
 
 [task_local]
 #柠檬发财大赢家
- 0,2 0 * * * http://nm66.top/jd_sqdyj.js, tag=柠檬省钱大赢家, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+ 0,2 0 * * * http://nm66.top/jd_fcdyj.js, tag=柠檬省钱大赢家, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 */
 
 
