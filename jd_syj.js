@@ -1,6 +1,6 @@
 /*
-赚京豆脚本，一：做任务 天天领京豆(加速领京豆)、三：赚京豆-瓜分京豆
-Last Modified time: 2021-5-21 17:58:02
+赚京豆脚本，一：做任务 天天领京豆(加速领京豆)
+Last Modified time: 2021-7-3 17:58:02
 活动入口：赚京豆(微信小程序)-赚京豆-签到领京豆
 更新地址：jd_syj.js
 已支持IOS双京东账号, Node.js支持N个京东账号
@@ -46,9 +46,13 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-  await getAuthorShareCode('http://cdn.annnibb.me/jd_zz.json');
-  await getAuthorShareCode('https://raw.githubusercontent.com/gitupdate/updateTeam/master/shareCodes/jd_zz.json');
-  await getRandomCode();
+  // $.authorTuanList = await getAuthorShareCode('https://raw.githubusercontent.com/Aaron-lv/updateTeam/master/shareCodes/jd_zz.json');
+  // if (!$.authorTuanList) {
+  //   $.http.get({url: 'https://purge.jsdelivr.net/gh/Aaron-lv/updateTeam@master/shareCodes/jd_zz.json'}).then((resp) => {}).catch((e) => $.log('刷新CDN异常', e));
+  //   await $.wait(1000)
+  //   $.authorTuanList = await getAuthorShareCode('https://cdn.jsdelivr.net/gh/Aaron-lv/updateTeam@master/shareCodes/jd_zz.json') || [];
+  // }
+  // await getRandomCode();
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -70,33 +74,33 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
       await main();
     }
   }
-  console.log(`\n\n内部互助 【赚京豆(微信小程序)-瓜分京豆】活动(优先内部账号互助(需内部cookie数量大于${$.assistNum || 4}个)，如有剩余助力次数则给作者和随机团助力)\n`)
-  for (let i = 0; i < cookiesArr.length; i++) {
-    $.canHelp = true
-    if (cookiesArr[i]) {
-      cookie = cookiesArr[i];
-      $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
-      if ($.canHelp && (cookiesArr.length > $.assistNum)) {
-        if ($.tuanList.length) console.log(`开始账号内部互助 赚京豆-瓜分京豆 活动，优先内部账号互助`)
-        for (let j = 0; j < $.tuanList.length; ++j) {
-          console.log(`账号 ${$.UserName} 开始给 【${$.tuanList[j]['assistedPinEncrypted']}】助力`)
-          await helpFriendTuan($.tuanList[j])
-          if(!$.canHelp) break
-          await $.wait(200)
-        }
-      }
-      if ($.canHelp) {
-        $.authorTuanList = [...$.authorTuanList, ...($.body1 || [])];
-        if ($.authorTuanList.length) console.log(`开始账号内部互助 赚京豆-瓜分京豆 活动，如有剩余则给作者和随机团助力`)
-        for (let j = 0; j < $.authorTuanList.length; ++j) {
-          console.log(`账号 ${$.UserName} 开始给作者和随机团 ${$.authorTuanList[j]['assistedPinEncrypted']}助力`)
-          await helpFriendTuan($.authorTuanList[j])
-          if(!$.canHelp) break
-          await $.wait(200)
-        }
-      }
-    }
-  }
+  // console.log(`\n\n内部互助 【赚京豆(微信小程序)-瓜分京豆】活动(优先内部账号互助(需内部cookie数量大于${$.assistNum || 4}个)，如有剩余助力次数则给作者和随机团助力)\n`)
+  // for (let i = 0; i < cookiesArr.length; i++) {
+  //   $.canHelp = true
+  //   if (cookiesArr[i]) {
+  //     cookie = cookiesArr[i];
+  //     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+  //     if ($.canHelp && (cookiesArr.length > $.assistNum)) {
+  //       if ($.tuanList.length) console.log(`开始账号内部互助 赚京豆-瓜分京豆 活动，优先内部账号互助`)
+  //       for (let j = 0; j < $.tuanList.length; ++j) {
+  //         console.log(`账号 ${$.UserName} 开始给 【${$.tuanList[j]['assistedPinEncrypted']}】助力`)
+  //         await helpFriendTuan($.tuanList[j])
+  //         if(!$.canHelp) break
+  //         await $.wait(200)
+  //       }
+  //     }
+  //     if ($.canHelp) {
+  //       $.authorTuanList = [...$.authorTuanList, ...($.body1 || [])];
+  //       if ($.authorTuanList.length) console.log(`开始账号内部互助 赚京豆-瓜分京豆 活动，如有剩余则给作者和随机团助力`)
+  //       for (let j = 0; j < $.authorTuanList.length; ++j) {
+  //         console.log(`账号 ${$.UserName} 开始给作者和随机团 ${$.authorTuanList[j]['assistedPinEncrypted']}助力`)
+  //         await helpFriendTuan($.authorTuanList[j])
+  //         if(!$.canHelp) break
+  //         await $.wait(200)
+  //       }
+  //     }
+  //   }
+  // }
 })()
     .catch((e) => {
       $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
@@ -115,7 +119,7 @@ async function main() {
   try {
     // await userSignIn();//赚京豆-签到领京豆
     await vvipTask();//赚京豆-加速领京豆
-    await distributeBeanActivity();//赚京豆-瓜分京豆
+    // await distributeBeanActivity();//赚京豆-瓜分京豆
     await showMsg();
   } catch (e) {
     $.logErr(e)
@@ -714,12 +718,12 @@ function getAuthorShareCode(url) {
       try {
         if (err) {
         } else {
-          $.authorTuanList = $.authorTuanList.concat(JSON.parse(data))
+          if (data) data = JSON.parse(data)
         }
       } catch (e) {
-        $.logErr(e, resp)
+        // $.logErr(e, resp)
       } finally {
-        resolve();
+        resolve(data);
       }
     })
   })
@@ -782,9 +786,9 @@ function taskTuanUrl(function_id, body = {}) {
 function TotalBean() {
   return new Promise(async resolve => {
     const options = {
-      url: "https://me-api.jd.com/user_new/info/GetJDUserInfoUnion",
+      url: "https://wq.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2",
       headers: {
-        Host: "me-api.jd.com",
+        Host: "wq.jd.com",
         Accept: "*/*",
         Connection: "keep-alive",
         Cookie: cookie,
@@ -801,15 +805,15 @@ function TotalBean() {
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data['retcode'] === "1001") {
+            if (data['retcode'] === 1001) {
               $.isLogin = false; //cookie过期
               return;
             }
-            if (data['retcode'] === "0" && data.data && data.data.hasOwnProperty("userInfo")) {
+            if (data['retcode'] === 0 && data.data && data.data.hasOwnProperty("userInfo")) {
               $.nickName = data.data.userInfo.baseInfo.nickname;
             }
           } else {
-            $.log('京东服务器返回空数据');
+            console.log('京东服务器返回空数据');
           }
         }
       } catch (e) {
