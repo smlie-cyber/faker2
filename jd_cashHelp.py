@@ -7,26 +7,30 @@ Author: Curtin
 Date: 2021/7/4 上午09:35
 TG交流 https://t.me/topstyle996
 TG频道 https://t.me/TopStyle2021
+update 2021.7.17 15:02
 '''
 
 #ck 优先读取【JDCookies.txt】 文件内的ck  再到 ENV的 变量 JD_COOKIE='ck1&ck2' 最后才到脚本内 cookies=ck
 cookies = ''
-# 设置被助力的账号可填用户名 或 pin的值不要;
+# 设置被助力的账号可填用户名 或 pin的值不要; env 设置 export cash_zlzh="用户1&用户N"
 cash_zlzh = ['Your JD_User', '买买买']
 
-### 推送参数设置
-# TG 机器人token
-TG_BOT_TOKEN = ''
-# TG用户id
-TG_USER_ID = ''
-# TG代理ip
-TG_PROXY_IP = ''
-# TG代理端口
-TG_PROXY_PORT = ''
-# TG 代理api
-TG_API_HOST = ''
-# 微信推送加+
-PUSH_PLUS_TOKEN = ''
+# Env环境设置 通知服务
+# export BARK=''                   # bark服务,苹果商店自行搜索;
+# export SCKEY=''                  # Server酱的SCKEY;
+# export TG_BOT_TOKEN=''           # tg机器人的TG_BOT_TOKEN;
+# export TG_USER_ID=''             # tg机器人的TG_USER_ID;
+# export TG_API_HOST=''            # tg 代理api
+# export TG_PROXY_IP=''            # tg机器人的TG_PROXY_IP;
+# export TG_PROXY_PORT=''          # tg机器人的TG_PROXY_PORT;
+# export DD_BOT_ACCESS_TOKEN=''    # 钉钉机器人的DD_BOT_ACCESS_TOKEN;
+# export DD_BOT_SECRET=''          # 钉钉机器人的DD_BOT_SECRET;
+# export QQ_SKEY=''                # qq机器人的QQ_SKEY;
+# export QQ_MODE=''                # qq机器人的QQ_MODE;
+# export QYWX_AM=''                # 企业微信；http://note.youdao.com/s/HMiudGkb
+# export PUSH_PLUS_TOKEN=''        # 微信推送Plus+ ；
+
+#####
 
 # 建议调整一下的参数
 # UA 可自定义你的，注意格式: 【 jdapp;iPhone;10.0.4;14.2;9fb54498b32e17dfc5717744b5eaecda8366223c;network/wifi;ADID/2CF597D0-10D8-4DF8-C5A2-61FD79AC8035;model/iPhone11,1;addressid/7785283669;appBuild/167707;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/null;supportJDSHWK/1 】
@@ -39,7 +43,7 @@ import random
 try:
     import requests
 except Exception as e:
-    print(e, "\n缺少requests 模块，请执行命令安装：python3 -m pip install requests")
+    print(e, "\n缺少requests 模块，请执行命令安装：pip3 install requests")
     exit(3)
 from urllib.parse import unquote, quote
 import json
@@ -51,31 +55,57 @@ t = time.time()
 aNum = 0
 cashCount = 0
 cashCountdict = {}
-message_info = ''''''
 
-def message(str_msg):
-    global message_info
-    print(str_msg)
-    message_info = "{}\n{}".format(message_info, str_msg)
-    sys.stdout.flush()
+
+def getEnvs(label):
+    try:
+        if label == 'True' or label == 'yes' or label == 'true' or label == 'Yes':
+            return True
+        elif label == 'False' or label == 'no' or label == 'false' or label == 'No':
+            return False
+    except Exception as e:
+        pass
+    try:
+        if '.' in label:
+            return float(label)
+        elif '&' in label:
+            return label.split('&')
+        elif '@' in label:
+            return label.split('@')
+        else:
+            return int(label)
+    except:
+        return label
 
 class getJDCookie(object):
     # 适配各种平台环境ck
+
     def getckfile(self):
-        if os.path.exists(pwd + 'JDCookies.txt'):
-            return pwd + 'JDCookies.txt'
-        elif os.path.exists('/ql/config/env.sh'):
+        global v4f
+        curf = pwd + 'JDCookies.txt'
+        v4f = '/jd/config/config.sh'
+        ql_new = '/ql/config/env.sh'
+        ql_old = '/ql/config/cookie.sh'
+        if os.path.exists(curf):
+            with open(curf, "r", encoding="utf-8") as f:
+                cks = f.read()
+                f.close()
+            r = re.compile(r"pt_key=.*?pt_pin=.*?;", re.M | re.S | re.I)
+            cks = r.findall(cks)
+            if len(cks) > 0:
+                return curf
+            else:
+                pass
+        if os.path.exists(ql_new):
             print("当前环境青龙面板新版")
-            return '/ql/config/env.sh'
-        elif os.path.exists('/ql/config/cookie.sh'):
+            return ql_new
+        elif os.path.exists(ql_old):
             print("当前环境青龙面板旧版")
-            return '/ql/config/env.sh'
-        elif os.path.exists('/jd/config/config.sh'):
+            return ql_old
+        elif os.path.exists(v4f):
             print("当前环境V4")
-            return '/jd/config/config.sh'
-        elif os.path.exists(pwd + 'JDCookies.txt'):
-            return pwd + 'JDCookies.txt'
-        return pwd + 'JDCookies.txt'
+            return v4f
+        return curf
 
     # 获取cookie
     def getCookie(self):
@@ -94,7 +124,10 @@ class getJDCookie(object):
                             print("当前获取使用 JDCookies.txt 的cookie")
                         cookies = ''
                         for i in cks:
-                            cookies += i
+                            if 'pt_key=xxxx' in i:
+                                pass
+                            else:
+                                cookies += i
                         return
             else:
                 with open(pwd + 'JDCookies.txt', "w", encoding="utf-8") as f:
@@ -174,132 +207,84 @@ class getJDCookie(object):
 getCk = getJDCookie()
 getCk.getCookie()
 
+# 获取v4环境 特殊处理
+try:
+    with open(v4f, 'r', encoding='utf-8') as v4f:
+        v4Env = v4f.read()
+    r = re.compile(r'^export\s(.*?)=[\'\"]?([\w\.\-@#&=_,\[\]\{\}\(\)]{1,})+[\'\"]{0,1}$',
+                   re.M | re.S | re.I)
+    r = r.findall(v4Env)
+    curenv = locals()
+    for i in r:
+        if i[0] != 'JD_COOKIE':
+            curenv[i[0]] = getEnvs(i[1])
+except:
+    pass
+
 if "cash_zlzh" in os.environ:
     if len(os.environ["cash_zlzh"]) > 1:
         cash_zlzh = os.environ["cash_zlzh"]
         cash_zlzh = cash_zlzh.replace('[', '').replace(']', '').replace('\'', '').replace(' ', '').split(',')
         print("已获取并使用Env环境 cash_zlzh:", cash_zlzh)
-# 获取TG_BOT_TOKEN
-if "TG_BOT_TOKEN" in os.environ:
-    if len(os.environ["TG_BOT_TOKEN"]) > 1:
-        TG_BOT_TOKEN = os.environ["TG_BOT_TOKEN"]
-        print("已获取并使用Env环境 TG_BOT_TOKEN")
-# 获取TG_USER_ID
-if "TG_USER_ID" in os.environ:
-    if len(os.environ["TG_USER_ID"]) > 1:
-        TG_USER_ID = os.environ["TG_USER_ID"]
-        print("已获取并使用Env环境 TG_USER_ID")
-# 获取代理ip
-if "TG_PROXY_IP" in os.environ:
-    if len(os.environ["TG_PROXY_IP"]) > 1:
-        TG_PROXY_IP = os.environ["TG_PROXY_IP"]
-        print("已获取并使用Env环境 TG_PROXY_IP")
-# 获取TG 代理端口
-if "TG_PROXY_PORT" in os.environ:
-    if len(os.environ["TG_PROXY_PORT"]) > 1:
-        TG_PROXY_PORT = os.environ["TG_PROXY_PORT"]
-        print("已获取并使用Env环境 TG_PROXY_PORT")
-    elif not TG_PROXY_PORT:
-        TG_PROXY_PORT = ''
-# 获取TG TG_API_HOST
-if "TG_API_HOST" in os.environ:
-    if len(os.environ["TG_API_HOST"]) > 1:
-        TG_API_HOST = os.environ["TG_API_HOST"]
-        print("已获取并使用Env环境 TG_API_HOST")
-# 获取pushplus+ PUSH_PLUS_TOKEN
-if "PUSH_PLUS_TOKEN" in os.environ:
-    if len(os.environ["PUSH_PLUS_TOKEN"]) > 1:
-        PUSH_PLUS_TOKEN = os.environ["PUSH_PLUS_TOKEN"]
-        print("已获取并使用Env环境 PUSH_PLUS_TOKEN")
 
-# 获取通知，
-notify_mode = []
-if PUSH_PLUS_TOKEN:
-    notify_mode.append('pushplus')
-if TG_BOT_TOKEN and TG_USER_ID:
-    notify_mode.append('telegram_bot')
 
-# tg通知
-def telegram_bot(title, content):
-    try:
-        print("\n")
-        bot_token = TG_BOT_TOKEN
-        user_id = TG_USER_ID
-        if not bot_token or not user_id:
-            print("tg服务的bot_token或者user_id未设置!!\n取消推送")
-            return
-        print("tg服务启动")
-        if TG_API_HOST:
-            url = f"{TG_API_HOST}/bot{TG_BOT_TOKEN}/sendMessage"
-        else:
-            url = f"https://api.telegram.org/bot{TG_BOT_TOKEN}/sendMessage"
 
-        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-        payload = {'chat_id': str(TG_USER_ID), 'text': f'{title}\n\n{content}', 'disable_web_page_preview': 'true'}
-        proxies = None
-        if TG_PROXY_IP and TG_PROXY_PORT:
-            proxyStr = "http://{}:{}".format(TG_PROXY_IP, TG_PROXY_PORT)
-            proxies = {"http": proxyStr, "https": proxyStr}
+## 获取通知服务
+class msg(object):
+    def __init__(self, m):
+        self.str_msg = m
+        self.message()
+    def message(self):
+        global msg_info
+        print(self.str_msg)
         try:
-            response = requests.post(url=url, headers=headers, params=payload, proxies=proxies).json()
+            msg_info = "{}\n{}".format(msg_info, self.str_msg)
         except:
-            print('推送失败！')
-        if response['ok']:
-            print('推送成功！')
-        else:
-            print('推送失败！')
-    except Exception as e:
-        print(e)
-
-# push推送
-def pushplus_bot(title, content):
-    try:
-        print("\n")
-        if not PUSH_PLUS_TOKEN:
-            print("PUSHPLUS服务的token未设置!!\n取消推送")
-            return
-        print("PUSHPLUS服务启动")
-        url = 'http://www.pushplus.plus/send'
-        data = {
-            "token": PUSH_PLUS_TOKEN,
-            "title": title,
-            "content": content
-        }
-        body = json.dumps(data).encode(encoding='utf-8')
-        headers = {'Content-Type': 'application/json'}
-        response = requests.post(url=url, data=body, headers=headers).json()
-        if response['code'] == 200:
-            print('推送成功！')
-        else:
-            print('推送失败！')
-    except Exception as e:
-        print(e)
-
-def send(title, content):
-    """
-    使用 bark, telegram bot, dingding bot, serverJ 发送手机推送
-    :param title:
-    :param content:
-    :return:
-    """
-    footer = '开源免费使用：https://github.com/curtinlv/JD-Script'
-    content = content + "\n" + footer
-    for i in notify_mode:
-
-        if i == 'telegram_bot':
-            if TG_BOT_TOKEN and TG_USER_ID:
-                telegram_bot(title=title, content=content)
+            msg_info = "{}".format(self.str_msg)
+        sys.stdout.flush()
+    def getsendNotify(self, a=0):
+        if a == 0:
+            a += 1
+        try:
+            url = 'https://gitee.com/curtinlv/Public/raw/master/sendNotify.py'
+            response = requests.get(url)
+            if 'curtinlv' in response.text:
+                with open('sendNotify.py', "w+", encoding="utf-8") as f:
+                    f.write(response.text)
             else:
-                print('未启用 telegram机器人')
-            continue
-        elif i == 'pushplus':
-            if PUSH_PLUS_TOKEN:
-                pushplus_bot(title=title, content=content)
+                if a < 5:
+                    a += 1
+                    return self.getsendNotify(a)
+                else:
+                    pass
+        except:
+            if a < 5:
+                a += 1
+                return self.getsendNotify(a)
             else:
-                print('未启用 PUSHPLUS机器人')
-            continue
+                pass
+    def main(self):
+        global send
+        cur_path = os.path.abspath(os.path.dirname(__file__))
+        sys.path.append(cur_path)
+        if os.path.exists(cur_path + "/sendNotify.py"):
+            try:
+                from sendNotify import send
+            except:
+                self.getsendNotify()
+                try:
+                    from sendNotify import send
+                except:
+                    print("加载通知服务失败~")
         else:
-            print('此类推送方式不存在')
+            self.getsendNotify()
+            try:
+                from sendNotify import send
+            except:
+                print("加载通知服务失败~")
+        ###################
+msg("").main()
+##############
 
 def userAgent():
     """
@@ -360,11 +345,18 @@ def helpCode(header, inviteCode, shareDate, uNUm, user, name):
         resp = requests.post(url=url, headers=header,  verify=False, timeout=30).json()
         if resp['data']['success']:
             print(f'用户{uNUm}【{user}】助力【{name}】{resp["data"]["bizMsg"]} -> 您也获得{resp["data"]["result"]["cashStr"]}现金')
+            return False
         else:
             print(f'用户{uNUm}【{user}】助力【{name}】{resp["data"]["bizMsg"]}')
+            if '晚' in resp["data"]["bizMsg"]:
+                return True
+            else:
+                return False
+
     except Exception as e:
         print("helpCode Error", e)
         print(f'用户{uNUm}【{user}】助力【{name}】报错了！')
+        return False
 
 def cash_exchangePage(ck):
     try:
@@ -389,7 +381,8 @@ def cash_exchangePage(ck):
         return 0
 
 def start():
-    print("### 签到领现金-助力 ###")
+    scriptName = '### 签到领现金-助力 ###'
+    print(scriptName)
     global cookiesList, userNameList, pinNameList, ckNum, cashCount, cashCountdict
     cookiesList, userNameList, pinNameList = getCk.iscookie()
     for ckname in cash_zlzh:
@@ -397,7 +390,7 @@ def start():
             ckNum = userNameList.index(ckname)
         except Exception as e:
             try:
-                ckNum = pinNameList.index(ckname)
+                ckNum = pinNameList.index(unquote(ckname))
             except:
                 print(f"请检查被助力账号【{ckname}】名称是否正确？提示：助力名字可填pt_pin的值、也可以填账号名。")
                 continue
@@ -412,18 +405,23 @@ def start():
             if i == cookiesList[ckNum]:
                 u += 1
                 continue
-            helpCode(buildHeader(i), inviteCode, shareDate, u+1, userNameList[u], userNameList[ckNum])
+            result = helpCode(buildHeader(i), inviteCode, shareDate, u+1, userNameList[u], userNameList[ckNum])
+            if result:
+                break
             time.sleep(sleepNum)
             u += 1
         totalMoney = cash_exchangePage(cookiesList[ckNum])
         cashCount += totalMoney
         cashCountdict[userNameList[ckNum]] = totalMoney
 
-    message("\n-------------------------")
+    print("\n-------------------------")
     for i in cashCountdict.keys():
-        message(f"账号【{i}】当前现金: ￥{cashCountdict[i]}")
-    message("## 总累计获得 ￥%.2f" % cashCount)
-    send("### 签到领现金-助力 ###", message_info)
+        msg(f"账号【{i}】当前现金: ￥{cashCountdict[i]}")
+    msg("## 总累计获得 ￥%.2f" % cashCount)
+    try:
+        send(scriptName, msg_info)
+    except:
+        pass
 
 
 if __name__ == '__main__':
