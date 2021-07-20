@@ -26,7 +26,7 @@ const ua = `jdltapp;iPhone;3.1.0;${Math.ceil(Math.random()*4+10)}.${Math.ceil(Ma
 var pins = process.env.earn30Pins ? process.env.earn30Pins : '';
 let cookiesArr = [];
 //默认添加我的 介意删除
-var helps = [{"shareCode":"8E544CDD476CD86C80C209F59E570461","redPacketId":"866618160968126464"}];
+var helps = [{"shareCode":"","redPacketId":""}];
 var tools = [];
 !(async () => {
      if (!pins) {
