@@ -1,6 +1,6 @@
 /*
 
- 9,12 * * * jd_mb.js
+ 6 9,12 * * * jd_mb.js
 */
 const $ = new Env('全民摸冰');
 //Node.js用户请在jdCookie.js处填写京东ck;
