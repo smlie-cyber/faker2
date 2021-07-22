@@ -1,32 +1,18 @@
 /*
-赚30元 来源cdle
-活动入口：我的-赚30
-每月可以提现100元，但需要邀请一个新人下首单。可以用已注册手机号重新注册为新人账号，切换ip可以提高成功率。
-已支持IOS双京东账号, Node.js支持N个京东账号
-脚本兼容: QuantumultX, Surge, Loon, 小火箭，JSBox, Node.js
-============Quantumultx===============
-[task_local]
-#赚30元
-1 1,12 * * * https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_earn30.js, tag=赚30元, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
-
-================Loon==============
-[Script]
-cron "1 1,12 * * *" script-path=https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_earn30.js tag=赚30元
-
-===============Surge=================
-赚30元 = type=cron,cronexp="1 1,12 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_earn30.js
-
-============小火箭=========
-赚30元 = type=cron,script-path=https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_earn30.js, cronexpr="1 1,12 * * *", timeout=3600, enable=true
-
- */
+赚30元
+更新时间：2021-7-19
+入口：我的-赚30
+备注：赚30元每日签到红包、天降红包助力，在earn30Pins环境变量中填入需要签到和接受助力的账号。
+技巧：每月可以提现100元，但需要邀请一个新人下首单。可以用已注册手机号重新注册为新人账号，切换ip可以提高成功率。
+TG学习交流群：https://t.me/cdles
+3 1,6 * * * https://raw.githubusercontent.com/cdle/jd_study/main/jd_earn30.js
+*/
 const $ = new Env("赚30元")
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 const ua = `jdltapp;iPhone;3.1.0;${Math.ceil(Math.random()*4+10)}.${Math.ceil(Math.random()*4)};${randomString(40)}`
 var pins = process.env.earn30Pins ? process.env.earn30Pins : '';
 let cookiesArr = [];
-//默认添加我的 介意删除
-var helps = [{"shareCode":"","redPacketId":""}];
+var helps = [];
 var tools = [];
 !(async () => {
      if (!pins) {
@@ -40,23 +26,24 @@ var tools = [];
                var data = await requestApi('createSplitRedPacket', cookie, {
                     scene: 3
                });
-
-               if (data.code === 0 && data.SplitRedPacketInfo) {
-                    console.log("redPacketId:",data.SplitRedPacketInfo.redPacketId)
-                    console.log("shareCode:",data.SplitRedPacketInfo.shareCode)
-                    helps.push({
-                         redPacketId: data.SplitRedPacketInfo.redPacketId,
-                         shareCode: data.SplitRedPacketInfo.shareCode
-                    })
-               } else if (data.code === 1) {
-                    data = await requestApi('getSplitRedPacket', cookie);
-                    console.log("redPacketId:",data.SplitRedPacketInfo.redPacketId)
-                    console.log("shareCode:",data.SplitRedPacketInfo.shareCode)
-                    if (data.code === '0' && data.SplitRedPacketInfo ) {//&& data.SplitRedPacketInfo.finishedMoney != data.SplitRedPacketInfo.totalMoney
+               if(data){
+                    if (data.code === 0 && data.SplitRedPacketInfo) {
                          helps.push({
                               redPacketId: data.SplitRedPacketInfo.redPacketId,
-                              shareCode: data.SplitRedPacketInfo.shareCode
+                              shareCode: data.SplitRedPacketInfo.shareCode,
+                              id: i,
+                              cookie: cookie
                          })
+                    } else if (data.code === 1) {
+                         data = await requestApi('getSplitRedPacket', cookie);
+                         if (data && data.code === '0' && data.SplitRedPacketInfo ) {//&& data.SplitRedPacketInfo.finishedMoney != data.SplitRedPacketInfo.totalMoney
+                              helps.push({
+                                   redPacketId: data.SplitRedPacketInfo.redPacketId,
+                                   shareCode: data.SplitRedPacketInfo.shareCode,
+                                   id: i,
+                                   cookie: cookie
+                              })
+                         }
                     }
                }
                data = await requestApi('fpSign', cookie);
@@ -68,26 +55,34 @@ var tools = [];
                     } else {
                          console.log(`${i+1} 签到失败`)
                     }
-               }
+               }               
           }
           tools.push({
                id: i,
-               cookie: cookie
+               cookie: cookie,
+               helps:[],
           })
      }
      for(let help of helps){
-          for (let i in cookiesArr) {
-               i = +i;
-               cookie = cookiesArr[i];
-               var UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
-
-               var data = await requestApi('splitRedPacket', cookie, {shareCode:help.shareCode,groupCode:help.redPacketId});
-               console.log(`${UserName} 组力->${help.shareCode} 组力结果 ${data.text}`)
-               if(data.text == "我的红包已拆完啦"){
-                    return
+          while (tools.length) {
+               var tool = tools.pop()
+               var data = await requestApi('splitRedPacket', tool.cookie, {shareCode:help.shareCode,groupCode:help.redPacketId});
+               if(data){
+                    console.log(`${tool.id+1}->${help.id+1} ${data.text}`)
+                    if(tool.helps.indexOf(help.id) != -1){
+                         break
+                    }
+                    if(data.text == "我的红包已拆完啦"){
+                         tools.unshift(tool)
+                         break
+                    }
+                    if(data.text.indexOf("帮拆次数已达上限")!=-1){
+                         continue
+                    }
+                    tool.helps.push(tool.id)
+                    tools.unshift(tool)
                }
           }
-
      }
 })().catch((e) => {
           $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
