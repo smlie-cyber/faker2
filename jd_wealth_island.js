@@ -13,7 +13,7 @@ const $ = new Env('财富大陆');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 // const notify = $.isNode() ? require('./sendNotify') : '';
 $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS;
-const UA = `jdpingou;iPhone;4.11.0;${Math.ceil(Math.random()*2+12)}.${Math.ceil(Math.random()*4)};${randomString(40)};`
+let UA = `jdapp;iPhone;10.0.5;${Math.ceil(Math.random()*2+12)}.${Math.ceil(Math.random()*4)};${randomString(40)};`
 function randomString(e) {
   e = e || 32;
   let t = "abcdefhijkmnprstwxyz2345678", a = t.length, n = "";
@@ -46,6 +46,7 @@ $.appId = 10032;
 !(async () => {
   if (!cookiesArr[0]) {
     $.msg('【京东账号一】宠汪汪积分兑换奖品失败', '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
+    return
   }
   console.log(`\n
 想要我的财富吗
@@ -55,6 +56,7 @@ $.appId = 10032;
   await requestAlgo();
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
+      UA = `jdapp;iPhone;10.0.5;${Math.ceil(Math.random()*2+12)}.${Math.ceil(Math.random()*4)};${randomString(40)};`
       $.cookie = cookiesArr[i] + '';
       $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
       $.index = i + 1;
