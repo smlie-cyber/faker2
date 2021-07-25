@@ -3,13 +3,14 @@
 cron 23 0,9 24-27 7 * jd_productZ4Brand.js
 要跑2次，第一次做任务和脚本内互助，第二次才够币抽奖
 */
-const $ = new Env('特务Zx佳沛');
+const $ = new Env('特务Z');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [];
 let UA = ``;
 $.allInvite = [];
 let useInfo = {};
+$.helpEncryptAssignmentId = '';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -50,6 +51,24 @@ if ($.isNode()) {
     }
     await $.wait(1000);
   }
+  // let res = [];
+  // try{res = await getAuthorShareCode('https://raw.githubusercontent.com/star261/jd/main/code/ProductZ4Brand.json');}catch (e) {}
+  // if(!res){
+  //   try{res = await getAuthorShareCode('https://gitee.com/star267/share-code/raw/master/ProductZ4Brand.json');}catch (e) {}
+  //   if(!res){res = [];}
+  // }
+  // for (let i = 0; i < 1; i++) {
+  //   $.cookie = cookiesArr[i];
+  //   $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
+  //   $.encryptProjectId = useInfo[$.nickName];
+  //   for (let j = 0; j < res.length; j++) {
+  //     $.code = res[j];
+  //     console.log(`${$.UserName},去助力:${$.code}`);
+  //     await takePostRequest('help');
+  //     await $.wait(2000);
+  //   }
+  // }
+
   for (let i = 0; i < cookiesArr.length; i++) {
     $.cookie = cookiesArr[i];
     $.canHelp = true;
@@ -79,11 +98,13 @@ async function main() {
     return ;
   }
   console.log(`获取活动详情成功`);
-  if(!$.activityInfo.activityUserInfo || !$.activityInfo.activityBaseInfo){
+  if(!$.activityInfo.activityUserInfo || !$.activityInfo.activityBaseInfo || !$.activityInfo.activityBaseInfo.activityId){
     console.log(`活动信息异常`);
     return;
   }
-  console.log(`当前call值：${$.activityInfo.activityUserInfo.userStarNum}`);
+  $.activityId = $.activityInfo.activityBaseInfo.activityId;
+  console.log(`当前活动ID：${$.activityId},call值：${$.activityInfo.activityUserInfo.userStarNum}`);
+  $.callNumber = $.activityInfo.activityUserInfo.userStarNum;
   $.encryptProjectId = $.activityInfo.activityBaseInfo.encryptProjectId;
   useInfo[$.nickName] = $.encryptProjectId;
   await $.wait(2000);
@@ -93,7 +114,7 @@ async function main() {
   await doTask();
   await $.wait(2000);
   $.runFlag = true;
-  for (let i = 0; i < 4 && $.runFlag; i++) {
+  for (let i = 0; i < 4 && $.runFlag && Number($.callNumber) > 200; i++) {
     console.log(`进行抽奖`);
     await takePostRequest('superBrandTaskLottery');//抽奖
     await $.wait(2000);
@@ -120,7 +141,8 @@ async function doTask(){
         'userName':$.UserName,
         'code':$.oneTask.ext.assistTaskDetail.itemId,
         'time':0
-      })
+      });
+      $.helpEncryptAssignmentId = $.oneTask.encryptAssignmentId;
     }
   }
 }
@@ -133,16 +155,16 @@ async function takePostRequest(type) {
       url = `https://api.m.jd.com/api?uuid=${UA.split(";")[4]}&client=wh5&area=&appid=ProductZ4Brand&functionId=showSecondFloorRunInfo&t=${Date.now()}&body=%7B%22source%22:%22run%22%7D`;
       break;
     case 'superBrandTaskList':
-      url = `https://api.m.jd.com/api?uuid=${UA.split(";")[4]}&client=wh5&area=&appid=ProductZ4Brand&functionId=superBrandTaskList&t=${Date.now()}&body=%7B%22source%22:%22run%22,%22activityId%22:1000035,%22assistInfoFlag%22:1%7D`;
+      url = `https://api.m.jd.com/api?uuid=${UA.split(";")[4]}&client=wh5&area=&appid=ProductZ4Brand&functionId=superBrandTaskList&t=${Date.now()}&body=%7B%22source%22:%22run%22,%22activityId%22:${$.activityId},%22assistInfoFlag%22:1%7D`;
       break;
     case 'superBrandTaskLottery':
-      url = `https://api.m.jd.com/api?uuid=${UA.split(";")[4]}&client=wh5&area=&appid=ProductZ4Brand&functionId=superBrandTaskLottery&t=${Date.now()}&body=%7B%22source%22:%22run%22,%22activityId%22:1000035%7D`;
+      url = `https://api.m.jd.com/api?uuid=${UA.split(";")[4]}&client=wh5&area=&appid=ProductZ4Brand&functionId=superBrandTaskLottery&t=${Date.now()}&body=%7B%22source%22:%22run%22,%22activityId%22:${$.activityId}%7D`;
       break;
     case 'followShop':
-      url = `https://api.m.jd.com/api?uuid=${UA.split(";")[4]}&client=wh5&area=&appid=ProductZ4Brand&functionId=superBrandDoTask&t=${Date.now()}&body=%7B%22source%22:%22run%22,%22activityId%22:1000035,%22encryptProjectId%22:%22${$.encryptProjectId}%22,%22encryptAssignmentId%22:%22${$.oneTask.encryptAssignmentId}%22,%22assignmentType%22:${$.oneTask.assignmentType},%22itemId%22:%22${$.runInfo.itemId}%22,%22actionType%22:0%7D`;
+      url = `https://api.m.jd.com/api?uuid=${UA.split(";")[4]}&client=wh5&area=&appid=ProductZ4Brand&functionId=superBrandDoTask&t=${Date.now()}&body=%7B%22source%22:%22run%22,%22activityId%22:${$.activityId},%22encryptProjectId%22:%22${$.encryptProjectId}%22,%22encryptAssignmentId%22:%22${$.oneTask.encryptAssignmentId}%22,%22assignmentType%22:${$.oneTask.assignmentType},%22itemId%22:%22${$.runInfo.itemId}%22,%22actionType%22:0%7D`;
       break;
     case 'help':
-      url = `https://api.m.jd.com/api?uuid=${UA.split(";")[4]}&client=wh5&area=&appid=ProductZ4Brand&functionId=superBrandDoTask&t=${Date.now()}&body=%7B%22source%22:%22run%22,%22activityId%22:1000035,%22encryptProjectId%22:%22${$.encryptProjectId}%22,%22encryptAssignmentId%22:%223R4U1Zucma2H3d8cprsCXftSFU8k%22,%22assignmentType%22:2,%22itemId%22:%22${$.code}%22,%22actionType%22:0%7D`;
+      url = `https://api.m.jd.com/api?uuid=${UA.split(";")[4]}&client=wh5&area=&appid=ProductZ4Brand&functionId=superBrandDoTask&t=${Date.now()}&body=%7B%22source%22:%22run%22,%22activityId%22:${$.activityId},%22encryptProjectId%22:%22${$.encryptProjectId}%22,%22encryptAssignmentId%22:%22${$.helpEncryptAssignmentId}%22,%22assignmentType%22:2,%22itemId%22:%22${$.code}%22,%22actionType%22:0%7D`;
       break;
     default:
       console.log(`错误${type}`);
@@ -185,7 +207,7 @@ function dealReturn(type, data) {
       if(data.code === '0' && data.data.bizCode !== 'TK000'){
         $.runFlag = false;
         console.log(`抽奖次数已用完`);
-      }else if(data.code === '0' && data.data.bizCode == 'TK000'){
+      }else if(data.code === '0' && data.data.bizCode === 'TK000'){
         if(data.data && data.data.result && data.data.result.rewardComponent && data.data.result.rewardComponent.beanList){
           if(data.data.result.rewardComponent.beanList.length >0){
             console.log(`获得豆子：${data.data.result.rewardComponent.beanList[0].quantity}`)
@@ -254,7 +276,7 @@ function getAuthorShareCode(url) {
         resolve(data || []);
       }
     })
-    await $.wait(10000)
+    await $.wait(10000);
     resolve();
   })
 }
