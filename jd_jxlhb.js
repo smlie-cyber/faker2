@@ -56,11 +56,21 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
   $.authorMyShareIds = [...((res && res.codes) || [])];
   //开启红包,获取互助码
   for (let i = 0; i < cookiesArr.length; i++) {
-    $.index = i + 1;
     cookie = cookiesArr[i];
     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+    $.index = i + 1;
+    $.isLogin = true
+    $.nickName = ''
     await TotalBean();
     console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
+    if (!$.isLogin) {
+      $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
+
+      if ($.isNode()) {
+        await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+      }
+      continue
+    }
     await main();
   }
   //互助
@@ -68,17 +78,17 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
   console.log(`\n开始助力：助力逻辑 先自己京东相互助力，如有剩余助力机会，则助力作者\n`)
   for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
+    $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
     $.canHelp = true;
     $.max = false;
-    $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
     for (let code of $.packetIdArr) {
       if (!code) continue;
       if ($.UserName === code['userName']) continue;
       console.log(`【${$.UserName}】去助力【${code['userName']}】邀请码：${code['strUserPin']}`);
       await enrollFriend(code['strUserPin']);
+      await $.wait(3000);
       if ($.max) continue
       if (!$.canHelp) break
-      await $.wait(2500);
     }
     if ($.canHelp) {
       console.log(`\n【${$.UserName}】有剩余助力机会，开始助力作者\n`)
@@ -86,9 +96,9 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
         if (!item) continue;
         console.log(`【${$.UserName}】去助力作者的邀请码：${item}`);
         await enrollFriend(item);
+        await $.wait(3000);
         if ($.max) continue
         if (!$.canHelp) break
-        await $.wait(2500);
       }
     }
   }
@@ -101,7 +111,7 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
       if (!$.packetIdArr[i]) continue;
       console.log(`\n【${$.UserName}】去拆第${grade}个红包`);
       await openRedPack($.packetIdArr[i]['strUserPin'], grade);
-      await $.wait(1000);
+      await $.wait(2000);
     }
   }
 })()
@@ -113,7 +123,9 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
     })
 async function main() {
   await joinActive();
+  await $.wait(2000)
   await getUserInfo()
+  await $.wait(2000)
 }
 //参与活动
 function joinActive() {
@@ -204,6 +216,7 @@ function enrollFriend(strPin) {
             console.log(`助力成功🎉:${data.sErrMsg}\n`);
             // if (data.Data.strUserPin) $.packetIdArr.push(data.Data.strUserPin);
           } else {
+            if (data.iRet === 2000) $.canHelp = false;//未登录
             if (data.iRet === 2015) $.canHelp = false;//助力已达上限
             if (data.iRet === 2016) {
               $.canHelp = false;//助力火爆
@@ -319,9 +332,9 @@ function taskurl(function_path, body = '', stk) {
 function TotalBean() {
   return new Promise(async resolve => {
     const options = {
-      url: "https://me-api.jd.com/user_new/info/GetJDUserInfoUnion",
+      url: "https://wq.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2",
       headers: {
-        Host: "me-api.jd.com",
+        Host: "wq.jd.com",
         Accept: "*/*",
         Connection: "keep-alive",
         Cookie: cookie,
@@ -338,15 +351,15 @@ function TotalBean() {
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data['retcode'] === "1001") {
+            if (data['retcode'] === 1001) {
               $.isLogin = false; //cookie过期
               return;
             }
-            if (data['retcode'] === "0" && data.data && data.data.hasOwnProperty("userInfo")) {
+            if (data['retcode'] === 0 && data.data && data.data.hasOwnProperty("userInfo")) {
               $.nickName = data.data.userInfo.baseInfo.nickname;
             }
           } else {
-            $.log('京东服务器返回空数据');
+            console.log('京东服务器返回空数据');
           }
         }
       } catch (e) {
