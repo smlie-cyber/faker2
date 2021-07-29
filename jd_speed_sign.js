@@ -10,17 +10,17 @@
 ============Quantumultx===============
 [task_local]
 #京东极速版
-0 7 * * * jd_speed_sign.js, tag=京东极速版, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png, enabled=true
+21 3,8 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_speed_sign.js, tag=京东极速版, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png, enabled=true
 
 ================Loon==============
 [Script]
-cron "0 7 * * *" script-path=jd_speed_sign.js,tag=京东极速版
+cron "21 3,8 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_speed_sign.js,tag=京东极速版
 
 ===============Surge=================
-京东极速版 = type=cron,cronexp="0 7 * * *",wake-system=1,timeout=33600,script-path=jd_speed_sign.js
+京东极速版 = type=cron,cronexp="21 3,8 * * *",wake-system=1,timeout=33600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_speed_sign.js
 
 ============小火箭=========
-京东极速版 = type=cron,script-path=jd_speed_sign.js, cronexpr="0 7 * * *", timeout=33600, enable=true
+京东极速版 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_speed_sign.js, cronexpr="21 3,8 * * *", timeout=33600, enable=true
 */
 
 const $ = new Env('京东极速版');
@@ -117,7 +117,7 @@ async function signInit() {
     $.get(taskUrl('speedSignInit', {
       "activityId": "8a8fabf3cccb417f8e691b6774938bc2",
       "kernelPlatform": "RN",
-      "inviterId":"gCBrvPfINCZc+dotfvHPlA=="
+      "inviterId":"U44jAghdpW58FKgfqPdotA=="
     }), async (err, resp, data) => {
       try {
         if (err) {
@@ -717,9 +717,9 @@ function invite() {
     'Cookie': cookie
   };
 
-  var dataString = `functionId=InviteFriendApiService&body={"method":"attendInviteActivity","data":{"inviterPin":"${encodeURIComponent(inviterId)}","channel":1,"token":"","frontendInitStatus":""}}&referer=-1&eid=eidIf3dd8121b7sdmiBLGdxRR46OlWyh62kFAZogTJFnYqqRkwgr63%2BdGmMlcv7EQJ5v0HBic81xHXzXLwKM6fh3i963zIa7Ym2v5ehnwo2B7uDN92Q0&aid=&client=ios&clientVersion=14.4&networkType=wifi&fp=-1&appid=market-task-h5&_t=${t}`;
+  var dataString = `functionId=InviteFriendChangeAssertsService&body={"method":"attendInviteActivity","data":{"inviterPin":"${encodeURIComponent(inviterId)}","channel":1,"token":"","frontendInitStatus":""}}&referer=-1&eid=eidI9b2981202fsec83iRW1nTsOVzCocWda3YHPN471AY78%2FQBhYbXeWtdg%2F3TCtVTMrE1JjM8Sqt8f2TqF1Z5P%2FRPGlzA1dERP0Z5bLWdq5N5B2VbBO&aid=&client=ios&clientVersion=14.4.2&networkType=wifi&fp=-1&uuid=ab048084b47df24880613326feffdf7eee471488&osVersion=14.4.2&d_brand=iPhone&d_model=iPhone10,2&agent=-1&pageClickKey=-1&platform=3&lang=zh_CN&appid=market-task-h5&_t=${t}`;
   var options = {
-    url: `https://api.m.jd.com/?t=${+new Date()}`,
+    url: `https://api.m.jd.com/?t=${t}`,
     headers: headers,
     body: dataString
   };
