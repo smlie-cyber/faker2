@@ -1,22 +1,8 @@
 /*
-脚本：清空购物车
-更新时间：2021-07-28
-因其他脚本会加入商品到购物车，故此脚本用来取消清空购物车
-默认：每运行一次脚本清空购物车所有商品
-建议此脚本运行时间在 其他脚本运行之后 再执行
 
-脚本兼容: Quantumult X, Surge, Loon, JSBox, Node.js, 小火箭
-==============Quantumult X===========
-[task_local]
 #清空购物车
-55 17 * * * jd_cleancart.js, tag=清空购物车, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
-===========Loon============
-[Script]
-cron "55 17 * * *" script-path=jd_cleancart.js,tag=清空购物车
-============Surge=============
-清空购物车 = type=cron,cronexp="55 17 * * *",wake-system=1,timeout=3600,script-path=jd_cleancart.js
-===========小火箭========
-清空购物车 = type=cron,script-path=jd_cleancart.js, cronexpr="55 17 * * *", timeout=3600, enable=true
+0 0 1 5 * jd_cleancart.js, tag=清空购物车, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+
  */
 const $ = new Env('清空购物车');
 //Node.js用户请在jdCookie.js处填写京东ck;
