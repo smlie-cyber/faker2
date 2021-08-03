@@ -1,9 +1,23 @@
 /*
-
+口袋书店
+活动入口：京东app首页-京东图书-右侧口袋书店
+已支持IOS双京东账号,Node.js支持N个京东账号
+脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
+============Quantumultx===============
+[task_local]
 #口袋书店
-1 8,12,18 * * *  jd_bookshop.js
+1 8,12,18 * * * jd_bookshop.js, tag=口袋书店, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 
-*/
+================Loon==============
+[Script]
+cron "1 8,12,18 * * *" script-path=jd_bookshop.js,tag=口袋书店
+
+===============Surge=================
+口袋书店 = type=cron,cronexp="1 8,12,18 * * *",wake-system=1,timeout=3600,script-path=jd_bookshop.js
+
+============小火箭=========
+口袋书店 = type=cron,script-path=jd_bookshop.js, cronexpr="1 8,12,18 * * *", timeout=3600, enable=true
+ */
 const $ = new Env('口袋书店');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -16,8 +30,8 @@ ADD_CART = $.isNode() ? (process.env.PURCHASE_SHOPS ? process.env.PURCHASE_SHOPS
 // 加入购物车开关，与东东小窝共享
 
 let inviteCodes = [
-  '28a699ac78d74aa3b31f7103597f8927@dbffb1e337174317a6482c237a871bfd@2f14ee9c92954cf79829320dd482bf49@fdf827db272543d88dbb51a505c2e869@ce2536153a8742fb9e8754a9a7d361da@38ba4e7ba8074b78851e928af2b4f6b2',
-  '28a699ac78d74aa3b31f7103597f8927@dbffb1e337174317a6482c237a871bfd@2f14ee9c92954cf79829320dd482bf49@fdf827db272543d88dbb51a505c2e869'
+  '6f46a1538969453d9a730ee299f2fc41@3ad242a50e9c4f2d9d2151aee38630b1@1a68165088b345c4ba2d8ce6464fa92b@bf4071c7fcde43828fddb83a08f53d28@abf5065d45e84851b972b37ac205e56a@3d9e58dbf2274db88afa177c7c2dccb0@341de42184724278b617e93a84d8bfff@195193ae706b477c9d232d38ec10fe03@41bee16aaa8d46cd86a5ca1efbabe156@9fd860599abf40ff819efc721a952dbc',
+  '6f46a1538969453d9a730ee299f2fc41@3ad242a50e9c4f2d9d2151aee38630b1@1a68165088b345c4ba2d8ce6464fa92b@bf4071c7fcde43828fddb83a08f53d28@abf5065d45e84851b972b37ac205e56a@3d9e58dbf2274db88afa177c7c2dccb0@341de42184724278b617e93a84d8bfff@195193ae706b477c9d232d38ec10fe03@41bee16aaa8d46cd86a5ca1efbabe156@9fd860599abf40ff819efc721a952dbc',
 ]
 
 if ($.isNode()) {
@@ -86,7 +100,7 @@ async function jdBeauty() {
     console.log(`金币大于800，去抽奖`)
     while ($.gold >= 800) {
       await draw()
-      await $.wait(1000)
+      await $.wait(2000)
       $.gold -= 800
     }
   }
@@ -100,7 +114,7 @@ async function helpFriends() {
     if (!code) continue
     console.log(`去助力好友${code}`)
     await getActContent(true, code)
-    await $.wait(500)
+    await $.wait(2000)
   }
 }
 
@@ -289,7 +303,6 @@ function getActContent(info = false, shareUuid = '') {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-   //     console.log(data)
           if (data && safeGet(data)) {
             data = JSON.parse(data);
             if (data.data) {
@@ -317,7 +330,7 @@ function getActContent(info = false, shareUuid = '') {
                       console.log(`去做${task.title}任务`)
                       for (let set of task.settings.filter(vo => vo.status === 0)) {
                         await doTask(set.type, set.value)
-                        await $.wait(500)
+                        await $.wait(2000)
                       }
                     }
                   } else if(task.title === '每日签到'){
@@ -327,13 +340,14 @@ function getActContent(info = false, shareUuid = '') {
                       for (let set of task.settings.filter(vo => vo.status === 0)) {
                         let res = await doTask(set.type, set.value)
                         if (res.result) break
-                        await $.wait(500)
+                        await $.wait(2000)
                       }
                     }
                   } else if (ADD_CART && ['加购商品'].includes(task.title)) {
                     if (task.okNum < task.dayMaxNum) {
                       console.log(`去做${task.title}任务`)
                       await doTask(task.settings[0].type, task.settings[0].value)
+                      await $.wait(2000)
                     }
                   }
                 }
