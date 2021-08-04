@@ -52,7 +52,7 @@ const JD_API_HOST = `https://api.m.jd.com`;
     }
     console.log("默认为号1开包/助力,号1为作者助力")
     message = ''
-    $.helptype = 2
+    $.helptype = 1
     $.needhelp = true
     $.canDraw = false
     $.canHelp = true;
