@@ -1,6 +1,18 @@
 /*
+tgchannel：https://t.me/Ariszy8028
+github：https://github.com/Ariszy/Private-Script
+boxjs：https://raw.githubusercontent.com/Ariszy/Private-Script/master/Ariszy.boxjs.json
+
+[task_local]
 #来电好物季
-10 1 * * * jd_ldhwj.js, tag= 来电好物季
+10 1 * * * https://raw.githubusercontent.com/Ariszy/Private-Script/master/JD/zy_ryhxj.js, tag= 来电好物季
+================Loon==============
+[Script]
+cron "10 1 * * *" script-path= https://raw.githubusercontent.com/Ariszy/Private-Script/master/JD/zy_ldhwj.js,tag= 来电好物季
+===============Surge=================
+来电好物季 = type=cron,cronexp="10 1 * * *",wake-system=1,timeout=3600,script-path= https://raw.githubusercontent.com/Ariszy/Private-Script/master/JD/zy_ldhwj.js
+============小火箭=========
+来电好物季 = type=cron,script-path= https://raw.githubusercontent.com/Ariszy/Private-Script/master/JD/zy_ldhw.js, cronexpr="10 1 * * *", timeout=3600, enable=true
 */
 const $ = new Env('来电好物季')
 const notify = $.isNode() ?require('./sendNotify') : '';
@@ -171,11 +183,11 @@ async function getLottery(){
     try{
         const result = JSON.parse(data)
         if(logs)$.log(data)
-        if(result.data.bizCode == 0 && result.data.result.userAwardsCacheDto.jBeanAwardVo.prizeName){
+        if(result.data.bizCode == 0 && result.data.result.lotteryReturnCode == 0){
            console.log("\n获得"+result.data.result.userAwardsCacheDto.jBeanAwardVo.prizeName+"\n")
    await $.wait(4000)
         }else{
-           $.log(result.data.bizMsg+"\n")
+           $.log("恭喜你，抽中了0豆豆\n")
         }
         }catch(e) {
           $.logErr(e, response);
