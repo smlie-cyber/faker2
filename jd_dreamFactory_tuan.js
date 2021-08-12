@@ -1,14 +1,8 @@
 /*
 *京喜工厂开团
-*一个账号能参团一次，一个账号一天能开三次团，请根据自己的情况设置需要开团的CK，一般至少5个CK能成团
-*脚本每执行一次，会领取上一次成团的奖励和新开一次团，每天执行4次能开完3次团和领取3次团的奖励
-*环境变量：
-*   OPEN_DREAMFACTORY_TUAN 脚本默认第一个CK开团，例：若OPEN_DREAMFACTORY_TUAN="2,3"  则第2，第3个CK开团，其他账号参加第2，第3个CK开的团
-*助力规则：
-*   开团账号开团，其他账号自动参团。 例：有A,B,C账号，A，B账号开团，则B，C会参加A的团，A会参加B的团
-*   账号内互助之后，开团账号若有剩下参团次数，会尝试加入作者团
-*成团条件：
-*   成团所需人数根据活动所需人数变化，一般为5-7人，
+
+1 0 * * * jd_dreamFactory_tuan.js
+
 *   若5人成团，则5个CK能成团一次，9个CK能成团两次，13个CK能成团三次
 * */
 !function (t, r) { "object" == typeof exports ? module.exports = exports = r() : "function" == typeof define && define.amd ? define([], r) : t.CryptoJS = r() }(this, function () {
