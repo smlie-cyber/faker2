@@ -3,7 +3,7 @@
 
 '''
 cron: 0 59 23 * * 0 jd_15.py
-new Env('家电15周年助力');
+new Env('Faker群友家电15周年助力');
 '''
 
 # cron 
