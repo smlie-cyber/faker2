@@ -1,15 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*
 '''
-项目名称: JD-Script / jd_jxgc_tuan
-Author: Curtin
-功能：京喜工厂开团，支持指定账号开团，跑一次脚本默认开3次团，，如未指定账号默认给账号1开团。
-cron: 10 0,7 * * *
-Date: 2021/7/17 下午9:40
-TG交流 https://t.me/topstyle996
-TG频道 https://t.me/TopStyle2021
-update 2021.8.8 12:30
-建议cron: 0 0,7,10 * * *  python3 jd_jxgc_tuan.py
+cron: 0 0,7,10 * * * jd_jxgc_tuan.py
 new Env('京喜工厂开团');
 '''
 #ck 优先读取【JDCookies.txt】 文件内的ck  再到 ENV的 变量 JD_COOKIE='ck1&ck2' 最后才到脚本内 cookies=ck
