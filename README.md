@@ -11,10 +11,8 @@ Faker维护仓库，收集全网目前能正常使用的脚本。
 
 
 
-
 【Faker集合仓库】
-ql repo https://github.com/shufflewzc/faker2.git "jd_|jx_|gua_|jddj_|getJDCookie" "activity|backUp" "^jd[^_]|USER|ZooFaker_Necklace.js|JDJRValidator_Pure|sign_graphics_validate"
-
+ql repo https://ghproxy.com/https://github.com/shufflewzc/faker2.git "jd_|jx_|gua_|jddj_|getJDCookie" "activity|backUp" "^jd[^_]|USER|utils|ZooFaker_Necklace.js|JDJRValidator_Pure|sign_graphics_validate"
 
 【圈x订阅地址】
 
