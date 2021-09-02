@@ -5,7 +5,7 @@
 */
 const $ = new Env('京东试用')
 
-const selfDomain = 'https://prodev.m.jd.com'
+const selfDomain = 'https://https://prodev.m.jd.com/mall/active/G7sQ92vWSBsTHzk4e953qUGWQJ4'
 let allGoodList = []
 let notifyMsg = ''
 
@@ -448,7 +448,7 @@ async function getSuccessList() {
 				'Connection': 'keep-alive',
 				'UserAgent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
 				'Accept': '*/*',
-				'Referer': 'https://prodev.m.jd.com/',
+				'Referer': 'https://https://prodev.m.jd.com/mall/active/G7sQ92vWSBsTHzk4e953qUGWQJ4/',
 				'Accept-Encoding': 'gzip, deflate, br',
 				'Accept-Language': 'zh,zh-CN;q=0.9,en;q=0.8',
 				'Cookie': $.cookie
@@ -481,7 +481,7 @@ async function showMsg() {
 	let message = `京东账号${$.index} ${$.nickName || $.UserName}\n🎉 本次申请：${$.totalTry}/${$.totalGoods}个商品🛒\n🎉 ${$.successList.length}个商品待领取🤩\n🎉 结束原因：${$.stopMsg}`
 	if (!args.jdNotify || args.jdNotify === 'false') {
 		$.msg($.name, ``, message, {
-			"open-url": 'https://prodev.m.jd.com/user'
+			"open-url": 'https://https://prodev.m.jd.com/mall/active/G7sQ92vWSBsTHzk4e953qUGWQJ4/user'
 		})
 		if ($.isNode())
 			notifyMsg += `${message}\n\n`
@@ -494,14 +494,14 @@ function taskurl(url, goodId) {
 	return {
 		'url': url,
 		'headers': {
-			'Host': 'prodev.m.jd.com',
+			'Host': 'https://prodev.m.jd.com/mall/active/G7sQ92vWSBsTHzk4e953qUGWQJ4',
 			'Accept-Encoding': 'gzip, deflate, br',
 			'Cookie': $.cookie,
 			'Connection': 'keep-alive',
 			'Accept': '*/*',
 			'UserAgent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
 			'Accept-Language': 'zh-cn',
-			'Referer': goodId ? `https://prodev.m.jd.com/activity/?id=${goodId}` : undefined
+			'Referer': goodId ? `https://https://prodev.m.jd.com/mall/active/G7sQ92vWSBsTHzk4e953qUGWQJ4/activity/?id=${goodId}` : undefined
 		},
 	}
 }
