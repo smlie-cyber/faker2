@@ -442,9 +442,9 @@ async function getSuccessList() {
 	// 一页12个商品，不会吧不会吧，不会有人一次性中奖12个商品吧？！🤔
 	return new Promise((resolve, reject) => {
 		const option = {
-			url: `https://https://prodev.m.jd.com/mall/active/G7sQ92vWSBsTHzk4e953qUGWQJ4/my/tryList?selected=2&page=1&tryVersion=2&_s=m`,
+			url: `https://prodev.m.jd.com/mall/active/G7sQ92vWSBsTHzk4e953qUGWQJ4/my/tryList?selected=2&page=1&tryVersion=2&_s=m`,
 			headers: {
-				'Host': 'https://prodev.m.jd.com/mall/active/G7sQ92vWSBsTHzk4e953qUGWQJ4',
+				'Host': 'prodev.m.jd.com/mall/active/G7sQ92vWSBsTHzk4e953qUGWQJ4',
 				'Connection': 'keep-alive',
 				'UserAgent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
 				'Accept': '*/*',
