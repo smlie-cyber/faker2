@@ -5,7 +5,7 @@
 */
 const $ = new Env('京东试用')
 
-const selfDomain = 'https://try.m.jd.com'
+const selfDomain = 'https://prodev.m.jd.com'
 let allGoodList = []
 let notifyMsg = ''
 
