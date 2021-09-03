@@ -1,332 +1,205 @@
+/*
+cron "30 * * * *" jd_CheckCK.js, tag:京东CK检测by-ccwav
+*/
 //Check Ck Tools by ccwav
-//Update : 20210902
-"use strict";
-
-const $ = new Env("京东CK检测");
-const notify = $.isNode() ? require("./sendNotify") : "";
-
-const got = require("got");
-require("dotenv").config();
-const { readFile } = require("fs/promises");
-const path = require("path");
-
-const qlDir = process.env.QL_DIR || "/ql";
-const authFile = path.join(qlDir, "config/auth.json");
-
+//Update : 20210903
+//增加变量显示正常CK:  export SHOWSUCCESSCK="true"
+//增加变量永远通知CK状态:  export CKALWAYSNOTIFY="true"
+//增加变量停用自动启用CK:  export CKAUTOENABLE="false"
+//增加变量不显示CK备注:  export CKREMARK="false"
+const $ = new Env('京东CK检测');
+const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
- const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-// const got = require('got');
-// const {getEnvs,DisableCk,EnableCk} = require('./ql');
-
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const got = require('got');
+const {getEnvs,DisableCk,EnableCk} = require('./ql');
 const api = got.extend({
-  prefixUrl: process.env.QL_URL || "http://localhost:5600",
-  responseType: "json",
   retry: { limit: 0 },
+  responseType: 'json',
 });
 
-// const api = got.extend({
-//     retry: { limit: 0 },
-//   });
-  
+let allMessage='',ErrorMessage='',SuccessMessage='',DisableMessage='',EnableMessage='',OErrorMessage='';
+let ShowSuccess="false",CKAlwaysNotify="false",CKAutoEnable="true",CKRemark="true";
 
-async function getToken() {
-  const authConfig = JSON.parse(await readFile(authFile));
-  return authConfig.token;
+if (process.env.SHOWSUCCESSCK) {
+  ShowSuccess = process.env.SHOWSUCCESSCK;
+}
+if (process.env.CKALWAYSNOTIFY) {
+  CKAlwaysNotify = process.env.CKALWAYSNOTIFY;
+}
+if (process.env.CKAUTOENABLE) {
+  CKAutoEnable = process.env.CKAUTOENABLE;
+}
+if (process.env.CKREMARK) {
+  CKRemark = process.env.CKREMARK;
 }
 
-const getEnvs = async () => {
-  const token = await getToken();
-  const body = await api({
-    url: "api/envs",
-    searchParams: {
-      searchValue: "JD_COOKIE",
-      t: Date.now(),
-    },
-    headers: {
-      Accept: "application/json",
-      authorization: `Bearer ${token}`,
-    },
-  }).json();
-  return body.data;
-};
-
-const getEnvsCount = async () => {
-  const data = await this.getEnvs();
-  return data.length;
-};
-
-const addEnv = async (cookie, remarks) => {
-  const token = await getToken();
-  const body = await api({
-    method: "post",
-    url: "api/envs",
-    params: { t: Date.now() },
-    json: [
-      {
-        name: "JD_COOKIE",
-        value: cookie,
-        remarks,
-      },
-    ],
-    headers: {
-      Accept: "application/json",
-      authorization: `Bearer ${token}`,
-      "Content-Type": "application/json;charset=UTF-8",
-    },
-  }).json();
-  return body;
-};
-
-const updateEnv = async (cookie, eid, remarks) => {
-  const token = await getToken();
-  const body = await api({
-    method: "put",
-    url: "api/envs",
-    params: { t: Date.now() },
-    json: {
-      name: "JD_COOKIE",
-      value: cookie,
-      _id: eid,
-      remarks,
-    },
-    headers: {
-      Accept: "application/json",
-      authorization: `Bearer ${token}`,
-      "Content-Type": "application/json;charset=UTF-8",
-    },
-  }).json();
-  return body;
-};
-
-const DisableCk = async (eid) => {
-  const token = await getToken();
-  const body = await api({
-    method: "put",
-    url: "api/envs/disable",
-    params: { t: Date.now() },
-    body: JSON.stringify([eid]),
-    headers: {
-      Accept: "application/json",
-      authorization: `Bearer ${token}`,
-      "Content-Type": "application/json;charset=UTF-8",
-    },
-  }).json();
-  return body;
-};
-
-const delEnv = async (eid) => {
-  const token = await getToken();
-  const body = await api({
-    method: "delete",
-    url: "api/envs",
-    params: { t: Date.now() },
-    body: JSON.stringify([eid]),
-    headers: {
-      Accept: "application/json",
-      authorization: `Bearer ${token}`,
-      "Content-Type": "application/json;charset=UTF-8",
-    },
-  }).json();
-  return body;
-};
-
-
-let allMessage = "",
-  ErrorMessage = "",
-  SuccessMessage = "",
-  DisableMessage = "",
-  EnableMessage = "",
-  OErrorMessage = "";
-var cookie;
-!(async () => {
+!(async () => {  
   const envs = await getEnvs();
   if (!envs[0]) {
-    $.msg(
-      $.name,
-      "【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取",
-      "https://bean.m.jd.com/bean/signIndex.action",
-      { "open-url": "https://bean.m.jd.com/bean/signIndex.action" }
-    );
+    $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-
+  
   for (let i = 0; i < envs.length; i++) {
     if (envs[i].value) {
-      cookie = envs[i].value;
-      $.UserName =
-        cookie.match(/pt_pin=([^; ]+)(?=;?)/) &&
-        cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1];
+      cookie = envs[i].value;	  
+      $.UserName = (cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])	 
       $.index = i + 1;
       $.isLogin = true;
-      $.error = "";
-      $.nickName = decodeURIComponent($.UserName);
-      $.Remark = envs[i].remarks || "";
-      $.Remark = $.Remark.replace(";", "");
-      if ($.Remark) {
-        $.Remark = "(" + $.Remark + ")";
-      }
-      console.log(
-        `开始检测【京东账号${$.index}】${$.nickName}${$.Remark}....\n`
-      );
-
-      await TotalBean();
-      if ($.error) {
-        OErrorMessage += $.error;
-        continue;
-      }
-      if (!$.isLogin) {
-        if (envs[i].status == 0) {
-          const DisableCkBody = await DisableCk(envs[i]._id);
-          if (DisableCkBody.code == 200) {
-            console.log(
-              `京东账号${$.index} : ${$.nickName || $.UserName}${
-                $.Remark
-              } 已失效,自动禁用成功!\n`
-            );
-            DisableMessage += `京东账号${$.index} : ${
-              $.nickName || $.UserName
-            }${$.Remark} (自动禁用成功!)\n`;
-          } else {
-            console.log(
-              `京东账号${$.index} : ${$.nickName || $.UserName}${
-                $.Remark
-              } 已失效,自动禁用失败!\n`
-            );
-            DisableMessage += `京东账号${$.index} : ${
-              $.nickName || $.UserName
-            }${$.Remark} (自动禁用失败!)\n`;
-          }
-        } else {
-          console.log(
-            `京东账号${$.index} : ${$.nickName || $.UserName}${
-              $.Remark
-            } 已失效,已禁用!\n`
-          );
-          ErrorMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${
-            $.Remark
-          } 已失效,已禁用.\n`;
-        }
-      } else {
-        if (envs[i].status == 1) {
-          const EnableCkBody = await EnableCk(envs[i]._id);
-          if (EnableCkBody.code == 200) {
-            console.log(
-              `京东账号${$.index} : ${$.nickName || $.UserName}${
-                $.Remark
-              } 已恢复,自动启用成功!\n`
-            );
-            EnableMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${
-              $.Remark
-            } (自动启用成功!)\n`;
-          } else {
-            console.log(
-              `京东账号${$.index} : ${$.nickName || $.UserName}${
-                $.Remark
-              } 已恢复,自动启用失败!\n`
-            );
-            EnableMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${
-              $.Remark
-            } (自动启用失败!)\n`;
-          }
-        } else {
-          SuccessMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${
-            $.Remark
-          }\n`;
-        }
-      }
-    }
-    await $.wait(2 * 1000);
-  }
-
-  if ($.isNode()) {
-    if (OErrorMessage) {
-      allMessage +=
-        `👇👇👇👇👇检测出错账号👇👇👇👇👇\n` + OErrorMessage + `\n\n`;
-    }
-    if (DisableMessage) {
-      allMessage +=
-        `👇👇👇👇👇自动禁用账号👇👇👇👇👇\n` + DisableMessage + `\n\n`;
-    }
-    if (EnableMessage) {
-      allMessage +=
-        `👇👇👇👇👇自动启用账号👇👇👇👇👇\n` + EnableMessage + `\n\n`;
-    }
-
-    if (ErrorMessage) {
-      allMessage += `👇👇👇👇👇失效账号👇👇👇👇👇\n` + ErrorMessage + `\n\n`;
-    } else {
-      allMessage += `👇👇👇👇👇失效账号👇👇👇👇👇\n 一个失效的都没有呢，羡慕啊...\n\n`;
-    }
-
-    console.log(allMessage);
-
-    //if (SuccessMessage){
-    //allMessage+=`👇👇👇👇👇👇👇有效账号👇👇👇👇👇👇👇\n`+SuccessMessage+`\n`;
-    //}
-    if ($.isNode() && (EnableMessage || DisableMessage || OErrorMessage)) {
-      await notify.sendNotify(`${$.name}`, `${allMessage}`, {
-        url: `https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean`,
-      });
-    }
-  }
+	  $.error = '';
+      $.nickName = decodeURIComponent($.UserName); 
+	  $.Remark = '';
+	  if (CKRemark=="true"){
+		  $.Remark = envs[i].remarks||'';	  	  
+		  if($.Remark){
+			  $.Remark = $.Remark.replace("remark=","");
+			  $.Remark = $.Remark.replace(";","");
+			  $.Remark="("+$.Remark+")";
+		  }	
+	  }	  
+	  console.log(`开始检测【京东账号${$.index}】${$.nickName}${$.Remark}....\n`);
+	 
+      await TotalBean();      
+	  if ($.error){
+		  OErrorMessage+=$.error;
+		  continue;
+	  }
+      if (!$.isLogin) {	
+		if (envs[i].status==0)
+		{
+		  const DisableCkBody = await DisableCk(envs[i]._id);
+		  if (DisableCkBody.code == 200) {
+		    console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 已失效,自动禁用成功!\n`);
+		    DisableMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} (自动禁用成功!)\n`;
+		    ErrorMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark}  已失效,自动禁用成功!\n`;  
+			} else {
+				console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 已失效,自动禁用失败!\n`);
+				DisableMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} (自动禁用失败!)\n`;
+				ErrorMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark}  已失效,自动禁用失败!\n`;
+			}			
+		} else {
+			console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 已失效,已禁用!\n`);
+			ErrorMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 已失效,已禁用.\n`;
+		}
+	  } else {
+		  if (envs[i].status==1){
+			  if (CKAutoEnable=="true"){
+				  const EnableCkBody = await EnableCk(envs[i]._id);
+				  if (EnableCkBody.code == 200) {
+					console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 已恢复,自动启用成功!\n`);
+					EnableMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} (自动启用成功!)\n`;
+					} else {
+						console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 已恢复,自动启用失败!\n`);
+						EnableMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} (自动启用失败!)\n`;
+					}
+				} else {
+					console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 已恢复，可手动启用!\n`);
+					EnableMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 已恢复，可手动启用.\n`;
+				}
+		  } else { 
+			console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 状态正常!\n`);
+			SuccessMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark}\n`;	
+		  }
+		}
+	  }
+      await $.wait(2*1000)
+    }  
+  
+  if ($.isNode()) {	  
+	  if (OErrorMessage){
+		  allMessage+=`👇👇👇👇👇检测出错账号👇👇👇👇👇\n`+OErrorMessage+`\n\n`;		  
+	  }
+	  if (DisableMessage){
+		  allMessage+=`👇👇👇👇👇自动禁用账号👇👇👇👇👇\n`+DisableMessage+`\n\n`;		  
+	  }	  
+	  if (EnableMessage){
+		  if (CKAutoEnable=="true"){
+			allMessage+=`👇👇👇👇👇自动启用账号👇👇👇👇👇\n`+EnableMessage+`\n\n`;
+		  }	else {
+			allMessage+=`👇👇👇👇👇账号已恢复👇👇👇👇👇\n`+EnableMessage+`\n\n`;
+		  }			  
+	  }	  
+	  
+	  if (ErrorMessage){
+		  allMessage+=`👇👇👇👇👇失效账号👇👇👇👇👇\n`+ErrorMessage+`\n\n`;		  
+	  }	else {
+		  allMessage+=`👇👇👇👇👇失效账号👇👇👇👇👇\n 一个失效的都没有呢，羡慕啊...\n\n`;
+	  }  
+	  
+	  console.log(allMessage);
+	  
+	  if (ShowSuccess=="true" && SuccessMessage){
+		  allMessage+=`👇👇👇👇👇有效账号👇👇👇👇👇\n`+SuccessMessage+`\n`;		  
+	  }
+	  if ($.isNode() && (EnableMessage || DisableMessage || OErrorMessage || CKAlwaysNotify=="true")) {
+		await notify.sendNotify(`${$.name}`, `${allMessage}`, { url: `https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean` })
+	  }
+   }
+   
 })()
-  .catch((e) => $.logErr(e))
-  .finally(() => $.done());
+    .catch((e) => $.logErr(e))
+    .finally(() => $.done())
 
 function TotalBean() {
-  return new Promise(async (resolve) => {
+  return new Promise(async resolve => {
     const options = {
-      url: `https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2`,
-      headers: {
-        Accept: "application/json,text/plain, */*",
+      "url": `https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2`,
+      "headers": {
+        "Accept": "application/json,text/plain, */*",
         "Content-Type": "application/x-www-form-urlencoded",
         "Accept-Encoding": "gzip, deflate, br",
         "Accept-Language": "zh-cn",
-        Connection: "keep-alive",
-        Cookie: cookie,
-        Referer: "https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2",
-        "User-Agent": $.isNode()
-          ? process.env.JD_USER_AGENT
-            ? process.env.JD_USER_AGENT
-            : require("./USER_AGENTS").USER_AGENT
-          : $.getdata("JDUA")
-          ? $.getdata("JDUA")
-          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+        "Connection": "keep-alive",
+        "Cookie": cookie,
+        "Referer": "https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2",
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1")
       },
-      timeout: 10000,
-    };
+      "timeout": 10000
+    }
     $.post(options, (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${JSON.stringify(err)}`);
-          console.log(`${$.name} API请求失败，请检查网路重试`);
-          $.error = `${$.name} :` + `${JSON.stringify(err)}\n`;
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+		  $.error=`${$.name} :`+`${JSON.stringify(err)}\n`;		 
         } else {
           if (data) {
-            data = JSON.parse(data);
-            if (data["retcode"] === 13) {
+            data = JSON.parse(data);			
+            if (data['retcode'] === 13) {
               $.isLogin = false; //cookie过期
-              $.nickName = decodeURIComponent($.UserName);
-              return;
+			  $.nickName = decodeURIComponent($.UserName);
+              return
             }
-            if (data["retcode"] === 0) {
-              $.nickName =
-                (data["base"] && data["base"].nickname) ||
-                decodeURIComponent($.UserName);
+		  
+	    //100跟101好像是wscode更新的ck特有的返回值
+            if (data['retcode'] === 100) {
+              $.nickName = (data['base'] && data['base'].nickname) || decodeURIComponent($.UserName);
+              return
+            }
+	    if (data['retcode'] === 101) {
+              $.nickName = (data['base'] && data['base'].nickname) || decodeURIComponent($.UserName);
+              return
+            }
+		  
+            if (data['retcode'] === 0) {
+              $.nickName = (data['base'] && data['base'].nickname) || decodeURIComponent($.UserName);
             } else {
               $.nickName = decodeURIComponent($.UserName);
+	      console.log("Debug Code:"+data['retcode']);
+	      $.error=`${$.nickName} :`+`服务器返回未知状态，不做变动\n`;		
             }
           } else {
-            console.log(`京东服务器返回空数据`);
+            console.log(`京东服务器返回空数据`)
           }
         }
       } catch (e) {
-        $.logErr(e, resp);
+        $.logErr(e, resp)
       } finally {
         resolve();
       }
-    });
-  });
+    })
+  })
 }
 
 function jsonParse(str) {
@@ -335,11 +208,7 @@ function jsonParse(str) {
       return JSON.parse(str);
     } catch (e) {
       console.log(e);
-      $.msg(
-        $.name,
-        "",
-        "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie"
-      );
+      $.msg($.name, '', '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie')
       return [];
     }
   }

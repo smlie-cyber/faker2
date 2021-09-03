@@ -1,8 +1,28 @@
 /*
-
+Last Modified time: 2020-12-26 22:58:02
+东东工厂，不是京喜工厂
+活动入口：京东APP首页-数码电器-东东工厂
+免费产生的电量(10秒1个电量，500个电量满，5000秒到上限不生产，算起来是84分钟达到上限)
+故建议1小时运行一次
+开会员任务和去京东首页点击“数码电器任务目前未做
+不会每次运行脚本都投入电力
+只有当心仪的商品存在，并且收集起来的电量满足当前商品所需电力，才投入
+已支持IOS双京东账号,Node.js支持N个京东账号
+脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
+============Quantumultx===============
+[task_local]
 #东东工厂
-10 * * * * jd_jdfactory.js
+10 * * * * jd_jdfactory.js, tag=东东工厂, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_factory.png, enabled=true
 
+================Loon==============
+[Script]
+cron "10 * * * *" script-path=jd_jdfactory.js,tag=东东工厂
+
+===============Surge=================
+东东工厂 = type=cron,cronexp="10 * * * *",wake-system=1,timeout=3600,script-path=jd_jdfactory.js
+
+============小火箭=========
+东东工厂 = type=cron,script-path=jd_jdfactory.js, cronexpr="10 * * * *", timeout=3600, enable=true
  */
 const $ = new Env('东东工厂');
 
@@ -24,8 +44,7 @@ if ($.isNode()) {
 }
 let wantProduct = ``;//心仪商品名称
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
-const inviteCodes = [`P04z54XCjVWnYaS5u2ak7ZCdan1Bdd2GGiWvC6_uERj`, 'P04z54XCjVWnYaS5m9cZ2ariXVJwHf0bgkG7Uo',
-`T0225KkcRB8c_VODck-nl_8IdgCjVWnYaS5kRrbA`];
+const inviteCodes = ['T0159KUiH11Mq1bSKBoCjVWnYaS5kRrbA', 'T0225KkcRh9P9FbRKUygl_UJcgCjVWnYaS5kRrbA', 'T011tvV3SBcQ8VwCjVWnYaS5kRrbA', 'T0225KkcR0pM91aBIhmgxf9bcACjVWnYaS5kRrbA', 'T0205KkcEV9ThDGWdWGw0K5uCjVWnYaS5kRrbA', 'T0225KkcRktN8lyBdEj1kaQMdwCjVWnYaS5kRrbA', 'P04z54XCjVWnYaS5uCHk7RxfanmDaDzc6FquQ'];
 !(async () => {
   await requireConfig();
   if (!cookiesArr[0]) {
@@ -598,7 +617,7 @@ function jdfactory_getHomeData() {
 function readShareCode() {
   console.log(`开始`)
   return new Promise(async resolve => {
-    $.get({url: `http://share.turinglabs.net/api/v3/ddfactory/query/${randomCount}/`, timeout: 10000}, (err, resp, data) => {
+    $.get({url: `https://cdn.nz.lu/api/ddfactory/${randomCount}`, headers:{'Host':'api.sharecode.ga'}, timeout: 10000}, (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
