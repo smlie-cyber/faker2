@@ -22,6 +22,9 @@ cron "5 6-18/6 * * *" script-path=jd_fruit.js,tag=东东农场
 东东农场 = type=cron,script-path=jd_fruit.js, cronexpr="5 6-18/6 * * *", timeout=3600, enable=true
 
 jd免费水果 搬的https://github.com/liuxiaoyucc/jd-helper/blob/a6f275d9785748014fc6cca821e58427162e9336/fruit/fruit.js
+
+export DO_TEN_WATER_AGAIN="" 默认再次浇水
+
 */
 const $ = new Env('东东农场');
 let cookiesArr = [], cookie = '', jdFruitShareArr = [], isBox = false, notify, newShareCodes, allMessage = '';
@@ -30,9 +33,9 @@ let cookiesArr = [], cookie = '', jdFruitShareArr = [], isBox = false, notify, n
 //下面给出两个账号的填写示例（iOS只支持2个京东账号）
 let shareCodes = [ // 这个列表填入你要助力的好友的shareCode
   //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
-  '59dde1a2da9748f0ba809a54abd90790',
+  '59dde1a2da9748f0ba809a54abd90790@b58ddba3317b44ceb0ac86ea8952998c@8d724eb95e3847b6a1526587d1836f27@a80b7d1db41a4381b742232da9d22443@ce107b8f64d24f62a92292180f764018@c73ea563a77d4464b273503d3838fec1@0dd9a7fd1feb449fb1bf854a3ec0e801',
   //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
-  '59dde1a2da9748f0ba809a54abd90790',
+  '59dde1a2da9748f0ba809a54abd90790@b58ddba3317b44ceb0ac86ea8952998c@8d724eb95e3847b6a1526587d1836f27@a80b7d1db41a4381b742232da9d22443@ce107b8f64d24f62a92292180f764018@c73ea563a77d4464b273503d3838fec1@0dd9a7fd1feb449fb1bf854a3ec0e801',
 ]
 let message = '', subTitle = '', option = {}, isFruitFinished = false;
 const retainWater = 100;//保留水滴大于多少g,默认100g;
@@ -134,7 +137,12 @@ async function jdFruit() {
       await getTenWaterAward();//领取10浇水奖励
       await getWaterFriendGotAward();//领取为2好友浇水奖励
       await duck();
-      await doTenWaterAgain();//再次浇水
+      if(!process.env.DO_TEN_WATER_AGAIN){
+        console.log('执行再次浇水')
+        await doTenWaterAgain();//再次浇水
+      } else {
+        console.log('不执行再次浇水，攒水滴')
+      }
       await predictionFruit();//预测水果成熟时间
     } else {
       console.log(`初始化农场数据异常, 请登录京东 app查看农场0元水果功能是否正常,农场初始化数据: ${JSON.stringify($.farmInfo)}`);
