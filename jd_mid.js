@@ -47,7 +47,7 @@ if ($.isNode()) {
                 continue
             }
             authorCodeList = [
-                '4122d9ea64864a6baaae8ef2cddc5e9f'
+                '4122d9ea64864a6baaae8ef2cddc5e9f','0da6e42c4e5f44879c9493ec3905fbe0'
             ]
             $.bean = 0;
             $.ADID = getUUID('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 1);
@@ -55,7 +55,7 @@ if ($.isNode()) {
             $.authorCode = ownCode ? ownCode : authorCodeList[0]
             $.authorNum = `${random(1000000, 9999999)}`
             $.randomCode = random(1000000, 9999999)
-            $.activityId = '0da6e42c4e5f44879c9493ec3905fbe0'
+            $.activityId = '0da6e42c4e5f44879c9493ec3905fbe0','21h3i1h3h2u1h3g43gy4g3yu2u23u423'
             $.activityShopId = '1000089686'
             $.activityUrl = `https://lzdz1-isv.isvjcloud.com/dingzhi/dz/openCard/activity/${$.authorNum}?activityId=${$.activityId}&shareUuid=${encodeURIComponent($.authorCode)}&adsource=null&shareuserid4minipg=null&shopid=${$.activityShopId}&lng=00.000000&lat=00.000000&sid=&un_area=`
             await marry();
