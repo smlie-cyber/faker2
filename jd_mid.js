@@ -1,10 +1,10 @@
 /*
 月满金秋 佳节聚“惠”
-2021-9-18 ~ 2021-8-28
+
 https://lzdz1-isv.isvjcloud.com/dingzhi/dz/openCard/activity/6531736?activityId=21h3i1h3h2u1h3g43gy4g3yu2u23u423
-0 14 * * * rush_lzdz1_mid.js
+0 14 * * * jd_mid.js
 */
-const $ = new Env("成家有福 长长久久");
+const $ = new Env("月满金秋 佳节聚“惠”");
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [], cookie = '', message = '';
@@ -47,15 +47,16 @@ if ($.isNode()) {
                 continue
             }
             authorCodeList = [
-                '4122d9ea64864a6baaae8ef2cddc5e9f','0da6e42c4e5f44879c9493ec3905fbe0'
+                '4122d9ea64864a6baaae8ef2cddc5e9f',
+                '0da6e42c4e5f44879c9493ec3905fbe0'
             ]
             $.bean = 0;
             $.ADID = getUUID('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 1);
             $.UUID = getUUID('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-            $.authorCode = ownCode ? ownCode : authorCodeList[0]
+            $.authorCode = ownCode ? ownCode : authorCodeList[random(0, authorCodeList.length)]
             $.authorNum = `${random(1000000, 9999999)}`
             $.randomCode = random(1000000, 9999999)
-            $.activityId = '0da6e42c4e5f44879c9493ec3905fbe0','21h3i1h3h2u1h3g43gy4g3yu2u23u423'
+            $.activityId = '21h3i1h3h2u1h3g43gy4g3yu2u23u423'
             $.activityShopId = '1000089686'
             $.activityUrl = `https://lzdz1-isv.isvjcloud.com/dingzhi/dz/openCard/activity/${$.authorNum}?activityId=${$.activityId}&shareUuid=${encodeURIComponent($.authorCode)}&adsource=null&shareuserid4minipg=null&shopid=${$.activityShopId}&lng=00.000000&lat=00.000000&sid=&un_area=`
             await marry();
