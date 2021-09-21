@@ -1,9 +1,9 @@
 ## 重要通知
-### 薄雷收淡雨，雌蜺映雄虹。云拥奇峰出，霞飞散绮红。
+### 落日与孤鹜齐飞,秋水共长天一色。
 
 Faker维护仓库，收集全网目前能正常使用的脚本。
 
-每日更新。
+#### 每日更新 TG群:https://t.me/jdscrip
 
 [![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=shufflewzc&bg_color=30,e96443,904e95&title_color=fff&text_color=fff)](https://github.com/anuraghazra/github-readme-stats)
 
@@ -23,9 +23,6 @@ https://www.notion.so/Quantumult-X-cd78c6ab616e4ebf947519b2dd690a0c
 
 【青龙系列教程】
 https://www.notion.so/Cent-OS-7-6-1c598629675145988b43a37998a1604a
-
-
-* 防走丢:https://t.me/jdscrip
 
 
 维护收集不易，各位看官高兴可打赏下~
@@ -62,7 +59,7 @@ https://www.notion.so/Cent-OS-7-6-1c598629675145988b43a37998a1604a
 * [@Zero-S1](https://github.com/Zero-S1)
 * [@uniqueque](https://github.com/uniqueque)
 * [@nzw9314](https://github.com/nzw9314)
-* [@Andy Woo](https://t.me/update_help_group)「青龙2.8互助研究院支持」
-* [@Oreo](https://github.com/Oreomeow) 「青龙2.8一键配置」
+* [@Andy Woo](https://t.me/update_help_group)「青龙互助研究院支持」
+* [@Oreo](https://github.com/Oreomeow) 「青龙Faker仓库一键安装配置」
 
 # 欢迎Pull Request！
