@@ -10,7 +10,7 @@
     * - Author          : 
     * - Modification    : 
 **/
-const $ = new Env("入会一时爽退卡火葬场");
+const $ = new Env("Vivo投票");
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [], cookie = '', message = '';
