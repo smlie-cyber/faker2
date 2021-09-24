@@ -58,7 +58,7 @@ if ($.isNode()) {
             $.activityShopId = '1000014486'
             $.activityUrl = `https://lzkjdz-isv.isvjcloud.com/pool/captain/${$.authorNum}?activityId=${$.activityId}&signUuid=${encodeURIComponent($.authorCode)}&adsource=null&shareuserid4minipg=null&shopid=${$.activityShopId}&lng=00.000000&lat=00.000000&sid=&un_area=`
             await anjia();
-            await $.wait(2000)
+            await $.wait(4000)
             if ($.bean > 0) {
                 message += `\n【京东账号${$.index}】${$.nickName || $.UserName} \n       └ 获得 ${$.bean} 京豆。`
             }
@@ -87,27 +87,33 @@ async function anjia() {
     await getFirstLZCK()
     await getToken();
     await task('customer/getSimpleActInfoVo', `activityId=${$.activityId}`, 1)
+    await $.wait(2000)
     if ($.token) {
         await getMyPing();
         if ($.secretPin) {
             console.log('去助力 -> ' + $.authorCode);
             await task('common/accessLogWithAD', `venderId=${$.activityShopId}&code=99&pin=${encodeURIComponent($.secretPin)}&activityId=${$.activityId}&pageUrl=${$.activityUrl}&subType=app&adSource=null`, 1);
+            await $.wait(2000)
             await task('activityContent', `activityId=${$.activityId}&pin=${encodeURIComponent($.secretPin)}&signUuid=${encodeURIComponent($.authorCode)}`)
             if ($.activityContent) {
                 if ($.activityContent.canJoin) {
                     $.log("加入队伍成功，请等待队长瓜分京豆")
+                    await $.wait(2000)
                     await task('saveCandidate', `activityId=${$.activityId}&pin=${encodeURIComponent($.secretPin)}&signUuid=${encodeURIComponent($.authorCode)}&pinImg=${encodeURIComponent(`https://img10.360buyimg.com/imgzone/jfs/t1/21383/2/6633/3879/5c5138d8E0967ccf2/91da57c5e2166005.jpg`)}`)
                     $.log("加入会员")
                     if (!$.activityContent.openCard) {
                         $.log("加入会员")
+                        await $.wait(2000)
                         await getShopOpenCardInfo({ "venderId": "1000014486", "channel": 401 }, 1000014486)
                         await bindWithVender({ "venderId": "1000014486", "shopId": "1000014486", "bindByVerifyCodeFlag": 1, "registerExtend": {}, "writeChildFlag": 0, "activityId": 3282318, "channel": 401 }, 100000000000085)
                     }
+                    await $.wait(2000)
                     await task('activityContent', `activityId=${$.activityId}&pin=${encodeURIComponent($.secretPin)}&signUuid=${encodeURIComponent($.authorCode)}`, 0, 1)
                     await $.wait(2000)
                     if ($.index === 1) {
                         if ($.activityContent.canCreate) {
                             $.log("创建队伍")
+                            await $.wait(2000)
                             await task('saveCaptain', `activityId=${$.activityId}&pin=${encodeURIComponent($.secretPin)}&pinImg=${encodeURIComponent(`https://img10.360buyimg.com/imgzone/jfs/t1/21383/2/6633/3879/5c5138d8E0967ccf2/91da57c5e2166005.jpg`)}`)
                         }
                     }
@@ -115,6 +121,7 @@ async function anjia() {
                     if ($.index === 1) {
                         $.log("创建队伍")
                         if ($.activityContent.canCreate) {
+                            await $.wait(2000)
                             await task('saveCaptain', `activityId=${$.activityId}&pin=${encodeURIComponent($.secretPin)}&pinImg=${encodeURIComponent(`https://img10.360buyimg.com/imgzone/jfs/t1/21383/2/6633/3879/5c5138d8E0967ccf2/91da57c5e2166005.jpg`)}`)
                         } else {
                             $.log("你已经是队长了")
@@ -124,6 +131,7 @@ async function anjia() {
                     } else {
                         $.log("无法加入队伍")
                     }
+                    await $.wait(2000)
                 }
             }
         } else {
@@ -149,7 +157,9 @@ function task(function_id, body, isCommon = 0) {
                                 case 'saveCaptain':
                                     if (data.data.signUuid) {
                                         $.log("创建队伍成功")
-                                        ownCode = data.data.signUuid
+                                        if($.index === 1){
+                                            ownCode = data.data.signUuid;
+                                        }
                                     }
                                     break;
                                 case 'dz/common/getSimpleActInfoVo':
@@ -169,7 +179,7 @@ function task(function_id, body, isCommon = 0) {
                                     // $.actorUuid = data.data.signUuid;
                                     for (const vo of data.data.successRetList) {
                                         if (!vo.sendStatus && vo.canSend) {
-                                            console.log(vo)
+                                            // console.log(vo)
                                             await task('updateCaptain', `uuid=${vo.memberList[0].captainId}`)
                                             await $.wait(3000)
                                         }
@@ -180,7 +190,7 @@ function task(function_id, body, isCommon = 0) {
 
                                     break
                                 default:
-                                    $.log(JSON.stringify(data))
+                                    // $.log(JSON.stringify(data))
                                     break;
                             }
                         } else {
