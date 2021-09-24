@@ -868,45 +868,57 @@ function ddBotNotify(text, desp) {
 }
 
 function qywxBotNotify(text, desp) {
-	return new Promise((resolve) => {
-		const options = {
-			url: `https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=${QYWX_KEY}`,
-			json: {
-				msgtype: 'text',
-				text: {
-					content: ` ${text}\n\n${desp}`,
+	function send(text) {
+		return new Promise((resolve) => {
+			const options = {
+				url: `https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=${QYWX_KEY}`,
+				json: {
+					msgtype: 'text',
+					text: {
+						content: text,
+					},
 				},
-			},
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			timeout,
-		};
-		if (QYWX_KEY) {
-			$.post(options, (err, resp, data) => {
-				try {
-					if (err) {
-						console.log('企业微信发送通知消息失败！！\n');
-						console.log(err);
-					} else {
-						data = JSON.parse(data);
-						if (data.errcode === 0) {
-							console.log('企业微信发送通知消息成功🎉。\n');
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				timeout,
+			};
+			if (QYWX_KEY) {
+				$.post(options, (err, resp, data) => {
+					try {
+						if (err) {
+							console.log('企业微信发送通知消息失败！！\n');
+							console.log(err);
 						} else {
-							console.log(`${data.errmsg}\n`);
+							data = JSON.parse(data);
+							if (data.errcode === 0) {
+								console.log('企业微信发送通知消息成功🎉。\n');
+							} else {
+								console.log(`${data.errmsg}\n`);
+							}
 						}
+					} catch (e) {
+						$.logErr(e, resp);
 					}
-				} catch (e) {
-					$.logErr(e, resp);
-				}
-				finally {
-					resolve(data);
-				}
-			});
-		} else {
-			resolve();
-		}
-	});
+					finally {
+						resolve(data);
+					}
+				});
+			} else {
+				resolve();
+			}
+		});
+	}
+
+	let content = `${text}\n\n${desp}`;
+	const count = content % 5120;
+	const arrayToSend = [];
+	for (let i = 0; i < count; i++) {
+		arrayToSend.push(
+			content.substr(5120 * i, 5120 * (i + 1))
+		)
+	}
+	return Promise.all(arrayToSend.map(v => send(v)))
 }
 
 function ChangeUserId(desp) {
