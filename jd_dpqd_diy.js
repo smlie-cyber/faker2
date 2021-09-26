@@ -4,8 +4,11 @@
 
 自带的Token List网址已不可用
 
-由Shy_yhS更新店铺数据，当日签到超过20家则火爆
-更新日期:2021-09-26 00:19
+由Shy_yhS更新店铺数据，每天超过20间店铺会火爆
+
+更新日期:2021-09-26 23:29
+
+更新日志：删除无效益店铺签到/添加效益店铺
 cron 30 0,23 * * * jd_qpqd_diy.js, tag=店铺签到diy
 */
 const $ = new Env('店铺签到');
@@ -24,7 +27,6 @@ let num=0
 let shopname=''
 
 const token=[
-
     'F985BDEBFD5CF232225941FC7D75DBC6',//5天100京豆09-26；
     'DA47E006D6B4A211C2C6525DC82F8EDC',//5天50京豆09-26；
     '98CCFA28021D0623A6835480228862D5',//2-3天70京豆；
@@ -45,7 +47,6 @@ const token=[
     'FEFF64118D0FB5D049763864E46ACBA3',
     'EBAA272399094FA03629BF1A6D1410EC',
     'CEDDE5C4517E0F402FD4B9A62B1F22D6',
-
 ]
 //IOS等用户直接用NobyDa的jd cookie
 
