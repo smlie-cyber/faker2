@@ -2,7 +2,7 @@
 cron "30 10,22 * * *" jd_bean_change.js, tag:资产变化强化版by-ccwav
  */
 
-//更新by ccwav,20210926,不支持QX，如果要修可以送我一部iphone~~
+//更新by ccwav,20210926,已经支持QX了
 //详细用法及其特殊变量请移步https://github.com/ccwav/QLScript 查看.
 
 // prettier-ignore
