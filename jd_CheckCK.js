@@ -1,6 +1,6 @@
 /*
 cron "30 * * * *" jd_CheckCK.js, tag:京东CK检测by-ccwav
-*/
+ */
 //Check Ck Tools by ccwav
 //Update : 20210903
 //增加变量显示正常CK:  export SHOWSUCCESSCK="true"
@@ -13,7 +13,9 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const got = require('got');
 const {
-    getEnvs, DisableCk, EnableCk
+    getEnvs,
+    DisableCk,
+    EnableCk
 } = require('./ql');
 const api = got.extend({
     retry: {
@@ -23,17 +25,17 @@ const api = got.extend({
 });
 
 let allMessage = '',
-    ErrorMessage = '',
-    SuccessMessage = '',
-    DisableMessage = '',
-    EnableMessage = '',
-    OErrorMessage = '';
+ErrorMessage = '',
+SuccessMessage = '',
+DisableMessage = '',
+EnableMessage = '',
+OErrorMessage = '';
 let ShowSuccess = "false",
-    CKAlwaysNotify = "false",
-    CKAutoEnable = "true",
-    CKRemark = "true",
-	NoWarnError = "false";
-	
+CKAlwaysNotify = "false",
+CKAutoEnable = "true",
+CKRemark = "true",
+NoWarnError = "false";
+
 if (process.env.SHOWSUCCESSCK) {
     ShowSuccess = process.env.SHOWSUCCESSCK;
 }
@@ -67,6 +69,7 @@ if (process.env.CKNOWARNERROR) {
             $.index = i + 1;
             $.isLogin = true;
             $.error = '';
+            $.NoReturn = '';
             $.nickName = "";
             $.Remark = '';
             $.CheckTime = 1;
@@ -86,24 +89,36 @@ if (process.env.CKNOWARNERROR) {
                 OErrorMessage += $.error;
                 continue;
             }
-            if ($.isLogin) {
-                if (!$.nickName) {
-                    console.log(`别名都获取不到你跟我说没过期，我信你个鬼，20秒后再测一遍....\n`);
-                    await $.wait(20 * 1000)
-                    await TotalBean();
-                    $.CheckTime = 2;
-                    if ($.isLogin) {
-                        if (!$.nickName) {
-                            console.log(`还是不信，10秒后更换接口再测一遍....\n`);
-                            await $.wait(10 * 1000)
-							//更换接口测试
-                            await isLoginByX1a0He();
-                            $.CheckTime = 3;
+			
+            if ($.NoReturn) {
+                console.log(`开始检测【京东账号${$.index}】${$.UserName2} 返回空数据，尝试使用接口2....\n`);
+                await isLoginByX1a0He();
+            } else {
+
+                if ($.isLogin) {
+                    if (!$.nickName) {
+                        console.log(`别名都获取不到你跟我说没过期，我信你个鬼，20秒后再测一遍....\n`);
+                        await $.wait(20 * 1000)
+                        await TotalBean();
+                        $.CheckTime = 2;
+                        if ($.isLogin) {
+                            if (!$.nickName) {
+                                console.log(`还是不信，10秒后更换接口再测一遍....\n`);
+                                await $.wait(10 * 1000)
+                                //更换接口测试
+                                await isLoginByX1a0He();
+                                $.CheckTime = 3;
+                            }
                         }
                     }
                 }
             }
-
+			
+			if ($.error) {
+                OErrorMessage += $.NoReturn;
+                continue;
+            }
+			
             if (!$.isLogin) {
                 if ($.CheckTime == 2) {
                     console.log(`狗东敢骗老子，继续禁用!\n`);
@@ -140,6 +155,7 @@ if (process.env.CKNOWARNERROR) {
                         if (EnableCkBody.code == 200) {
                             console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 已恢复,自动启用成功!\n`);
                             EnableMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} (自动启用成功!)\n`;
+                            SuccessMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} (自动启用成功!)\n`;
                         } else {
                             console.log(`京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} 已恢复,自动启用失败!\n`);
                             EnableMessage += `京东账号${$.index} : ${$.nickName || $.UserName}${$.Remark} (自动启用失败!)\n`;
@@ -183,11 +199,11 @@ if (process.env.CKNOWARNERROR) {
         if (ShowSuccess == "true" && SuccessMessage) {
             allMessage += `👇👇👇👇👇有效账号👇👇👇👇👇\n` + SuccessMessage + `\n`;
         }
-		
-		if(NoWarnError== "true"){
-			OErrorMessage="NoWarn!";
-		}
-		
+
+        if (NoWarnError == "true") {
+            OErrorMessage = "";
+        }
+
         if ($.isNode() && (EnableMessage || DisableMessage || OErrorMessage || CKAlwaysNotify == "true")) {
             await notify.sendNotify(`${$.name}`, `${allMessage}`, {
                 url: `https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean`
@@ -197,7 +213,7 @@ if (process.env.CKNOWARNERROR) {
 
 })()
 .catch((e) => $.logErr(e))
-    .finally(() => $.done())
+.finally(() => $.done())
 
 function TotalBean() {
     return new Promise(async resolve => {
@@ -218,7 +234,8 @@ function TotalBean() {
             try {
                 if (err) {
                     $.logErr(err)
-                    $.error = `${$.name} :` + `${JSON.stringify(err)}\n`;
+                    $.nickName = decodeURIComponent($.UserName);
+                    $.error = `${$.nickName} :` + `${JSON.stringify(err)}\n`;
                 } else {
                     if (data) {
                         data = JSON.parse(data);
@@ -235,21 +252,23 @@ function TotalBean() {
                             $.error = `${$.nickName} :` + `服务器返回未知状态，不做变动\n`;
                         }
                     } else {
-						$.nickName = decodeURIComponent($.UserName);
+                        $.nickName = decodeURIComponent($.UserName);
                         $.log('京东服务器返回空数据');
-                        $.error = `${$.nickName} :` + `服务器返回空数据，不做变动\n`;
+                        $.NoReturn = `${$.nickName} :` + `服务器返回空数据，不做变动\n`;
                     }
                 }
             } catch (e) {
+                $.nickName = decodeURIComponent($.UserName);
                 $.logErr(e)
-                $.error = `检测出错，不做变动\n`;
-            } finally {
+                $.error = `${$.nickName} : 检测出错，不做变动\n`;
+            }
+            finally {
                 resolve();
             }
         })
     })
 }
-function isLoginByX1a0He(){
+function isLoginByX1a0He() {
     return new Promise((resolve) => {
         const options = {
             url: 'https://plogin.m.jd.com/cgi-bin/ml/islogin',
@@ -260,22 +279,23 @@ function isLoginByX1a0He(){
             },
         }
         $.get(options, (err, resp, data) => {
-            try{
-                if(data){
+            try {
+                if (data) {
                     data = JSON.parse(data);
-                    if(data.islogin === "1"){
+                    if (data.islogin === "1") {
                         console.log(`使用X1a0He写的接口加强检测: Cookie有效\n`)
-                    } else if(data.islogin === "0"){
+                    } else if (data.islogin === "0") {
                         $.isLogin = false;
-						console.log(`使用X1a0He写的接口加强检测: Cookie无效\n`)
+                        console.log(`使用X1a0He写的接口加强检测: Cookie无效\n`)
                     } else {
                         console.log(`使用X1a0He写的接口加强检测: 未知返回，不作变更...\n`)
-                        $.error= `使用X1a0He写的接口加强检测: 未知返回...\n`
+                        $.error = `使用X1a0He写的接口加强检测: 未知返回...\n`
                     }
                 }
-            } catch(e){
+            } catch (e) {
                 console.log(e);
-            } finally{
+            }
+            finally {
                 resolve();
             }
         });
@@ -303,9 +323,11 @@ function Env(t, e) {
         send(t, e = "GET") {
             t = "string" == typeof t ? {
                 url: t
-            } : t;
+            }
+             : t;
             let s = this.get;
-            return "POST" === e && (s = this.post), new Promise((e, i) => {
+            return "POST" === e && (s = this.post),
+            new Promise((e, i) => {
                 s.call(this, t, (t, s, r) => {
                     t ? i(t) : e(s)
                 })
@@ -320,7 +342,17 @@ function Env(t, e) {
     }
     return new class {
         constructor(t, e) {
-            this.name = t, this.http = new s(this), this.data = null, this.dataFile = "box.dat", this.logs = [], this.isMute = !1, this.isNeedRewrite = !1, this.logSeparator = "\n", this.startTime = (new Date).getTime(), Object.assign(this, e), this.log("", `🔔${this.name}, 开始!`)
+            this.name = t,
+            this.http = new s(this),
+            this.data = null,
+            this.dataFile = "box.dat",
+            this.logs = [],
+            this.isMute = !1,
+            this.isNeedRewrite = !1,
+            this.logSeparator = "\n",
+            this.startTime = (new Date).getTime(),
+            Object.assign(this, e),
+            this.log("", `🔔${this.name}, 开始!`)
         }
         isNode() {
             return "undefined" != typeof module && !!module.exports
@@ -351,9 +383,10 @@ function Env(t, e) {
         getjson(t, e) {
             let s = e;
             const i = this.getdata(t);
-            if (i) try {
-                s = JSON.parse(this.getdata(t))
-            } catch {}
+            if (i)
+                try {
+                    s = JSON.parse(this.getdata(t))
+                } catch {}
             return s
         }
         setjson(t, e) {
@@ -375,8 +408,10 @@ function Env(t, e) {
                 let i = this.getdata("@chavy_boxjs_userCfgs.httpapi");
                 i = i ? i.replace(/\n/g, "").trim() : i;
                 let r = this.getdata("@chavy_boxjs_userCfgs.httpapi_timeout");
-                r = r ? 1 * r : 20, r = e && e.timeout ? e.timeout : r;
-                const [o, h] = i.split("@"), n = {
+                r = r ? 1 * r : 20,
+                r = e && e.timeout ? e.timeout : r;
+                const[o, h] = i.split("@"),
+                n = {
                     url: `http://${h}/v1/scripting/evaluate`,
                     body: {
                         script_text: t,
@@ -392,13 +427,16 @@ function Env(t, e) {
             }).catch(t => this.logErr(t))
         }
         loaddata() {
-            if (!this.isNode()) return {}; {
-                this.fs = this.fs ? this.fs : require("fs"), this.path = this.path ? this.path : require("path");
+            if (!this.isNode())
+                return {}; {
+                this.fs = this.fs ? this.fs : require("fs"),
+                this.path = this.path ? this.path : require("path");
                 const t = this.path.resolve(this.dataFile),
-                    e = this.path.resolve(process.cwd(), this.dataFile),
-                    s = this.fs.existsSync(t),
-                    i = !s && this.fs.existsSync(e);
-                if (!s && !i) return {}; {
+                e = this.path.resolve(process.cwd(), this.dataFile),
+                s = this.fs.existsSync(t),
+                i = !s && this.fs.existsSync(e);
+                if (!s && !i)
+                    return {}; {
                     const i = s ? t : e;
                     try {
                         return JSON.parse(this.fs.readFileSync(i))
@@ -410,12 +448,13 @@ function Env(t, e) {
         }
         writedata() {
             if (this.isNode()) {
-                this.fs = this.fs ? this.fs : require("fs"), this.path = this.path ? this.path : require("path");
+                this.fs = this.fs ? this.fs : require("fs"),
+                this.path = this.path ? this.path : require("path");
                 const t = this.path.resolve(this.dataFile),
-                    e = this.path.resolve(process.cwd(), this.dataFile),
-                    s = this.fs.existsSync(t),
-                    i = !s && this.fs.existsSync(e),
-                    r = JSON.stringify(this.data);
+                e = this.path.resolve(process.cwd(), this.dataFile),
+                s = this.fs.existsSync(t),
+                i = !s && this.fs.existsSync(e),
+                r = JSON.stringify(this.data);
                 s ? this.fs.writeFileSync(t, r) : i ? this.fs.writeFileSync(e, r) : this.fs.writeFileSync(t, r)
             }
         }
@@ -423,7 +462,8 @@ function Env(t, e) {
             const i = e.replace(/\[(\d+)\]/g, ".$1").split(".");
             let r = t;
             for (const t of i)
-                if (r = Object(r)[t], void 0 === r) return s;
+                if (r = Object(r)[t], void 0 === r)
+                    return s;
             return r
         }
         lodash_set(t, e, s) {
@@ -432,28 +472,35 @@ function Env(t, e) {
         getdata(t) {
             let e = this.getval(t);
             if (/^@/.test(t)) {
-                const [, s, i] = /^@(.*?)\.(.*?)$/.exec(t), r = s ? this.getval(s) : "";
-                if (r) try {
-                    const t = JSON.parse(r);
-                    e = t ? this.lodash_get(t, i, "") : e
-                } catch (t) {
-                    e = ""
-                }
+                const[, s, i] = /^@(.*?)\.(.*?)$/.exec(t),
+                r = s ? this.getval(s) : "";
+                if (r)
+                    try {
+                        const t = JSON.parse(r);
+                        e = t ? this.lodash_get(t, i, "") : e
+                    } catch (t) {
+                        e = ""
+                    }
             }
             return e
         }
         setdata(t, e) {
             let s = !1;
             if (/^@/.test(e)) {
-                const [, i, r] = /^@(.*?)\.(.*?)$/.exec(e), o = this.getval(i), h = i ? "null" === o ? null : o || "{}" : "{}";
+                const[, i, r] = /^@(.*?)\.(.*?)$/.exec(e),
+                o = this.getval(i),
+                h = i ? "null" === o ? null : o || "{}" : "{}";
                 try {
                     const e = JSON.parse(h);
-                    this.lodash_set(e, r, t), s = this.setval(JSON.stringify(e), i)
+                    this.lodash_set(e, r, t),
+                    s = this.setval(JSON.stringify(e), i)
                 } catch (e) {
                     const o = {};
-                    this.lodash_set(o, r, t), s = this.setval(JSON.stringify(o), i)
+                    this.lodash_set(o, r, t),
+                    s = this.setval(JSON.stringify(o), i)
                 }
-            } else s = this.setval(t, e);
+            } else
+                s = this.setval(t, e);
             return s
         }
         getval(t) {
@@ -463,80 +510,89 @@ function Env(t, e) {
             return this.isSurge() || this.isLoon() ? $persistentStore.write(t, e) : this.isQuanX() ? $prefs.setValueForKey(t, e) : this.isNode() ? (this.data = this.loaddata(), this.data[e] = t, this.writedata(), !0) : this.data && this.data[e] || null
         }
         initGotEnv(t) {
-            this.got = this.got ? this.got : require("got"), this.cktough = this.cktough ? this.cktough : require("tough-cookie"), this.ckjar = this.ckjar ? this.ckjar : new this.cktough.CookieJar, t && (t.headers = t.headers ? t.headers : {}, void 0 === t.headers.Cookie && void 0 === t.cookieJar && (t.cookieJar = this.ckjar))
+            this.got = this.got ? this.got : require("got"),
+            this.cktough = this.cktough ? this.cktough : require("tough-cookie"),
+            this.ckjar = this.ckjar ? this.ckjar : new this.cktough.CookieJar,
+            t && (t.headers = t.headers ? t.headers : {}, void 0 === t.headers.Cookie && void 0 === t.cookieJar && (t.cookieJar = this.ckjar))
         }
         get(t, e = (() => {})) {
-            t.headers && (delete t.headers["Content-Type"], delete t.headers["Content-Length"]), this.isSurge() || this.isLoon() ? (this.isSurge() && this.isNeedRewrite && (t.headers = t.headers || {}, Object.assign(t.headers, {
-                "X-Surge-Skip-Scripting": !1
-            })), $httpClient.get(t, (t, s, i) => {
-                !t && s && (s.body = i, s.statusCode = s.status), e(t, s, i)
-            })) : this.isQuanX() ? (this.isNeedRewrite && (t.opts = t.opts || {}, Object.assign(t.opts, {
-                hints: !1
-            })), $task.fetch(t).then(t => {
-                const {
-                    statusCode: s,
-                    statusCode: i,
-                    headers: r,
-                    body: o
-                } = t;
-                e(null, {
-                    status: s,
-                    statusCode: i,
-                    headers: r,
-                    body: o
-                }, o)
-            }, t => e(t))) : this.isNode() && (this.initGotEnv(t), this.got(t).on("redirect", (t, e) => {
-                try {
-                    if (t.headers["set-cookie"]) {
-                        const s = t.headers["set-cookie"].map(this.cktough.Cookie.parse).toString();
-                        s && this.ckjar.setCookieSync(s, null), e.cookieJar = this.ckjar
+            t.headers && (delete t.headers["Content-Type"], delete t.headers["Content-Length"]),
+            this.isSurge() || this.isLoon() ? (this.isSurge() && this.isNeedRewrite && (t.headers = t.headers || {}, Object.assign(t.headers, {
+                        "X-Surge-Skip-Scripting": !1
+                    })), $httpClient.get(t, (t, s, i) => {
+                    !t && s && (s.body = i, s.statusCode = s.status),
+                    e(t, s, i)
+                })) : this.isQuanX() ? (this.isNeedRewrite && (t.opts = t.opts || {}, Object.assign(t.opts, {
+                        hints: !1
+                    })), $task.fetch(t).then(t => {
+                    const {
+                        statusCode: s,
+                        statusCode: i,
+                        headers: r,
+                        body: o
+                    } = t;
+                    e(null, {
+                        status: s,
+                        statusCode: i,
+                        headers: r,
+                        body: o
+                    }, o)
+                }, t => e(t))) : this.isNode() && (this.initGotEnv(t), this.got(t).on("redirect", (t, e) => {
+                    try {
+                        if (t.headers["set-cookie"]) {
+                            const s = t.headers["set-cookie"].map(this.cktough.Cookie.parse).toString();
+                            s && this.ckjar.setCookieSync(s, null),
+                            e.cookieJar = this.ckjar
+                        }
+                    } catch (t) {
+                        this.logErr(t)
                     }
-                } catch (t) {
-                    this.logErr(t)
-                }
-            }).then(t => {
-                const {
-                    statusCode: s,
-                    statusCode: i,
-                    headers: r,
-                    body: o
-                } = t;
-                e(null, {
-                    status: s,
-                    statusCode: i,
-                    headers: r,
-                    body: o
-                }, o)
-            }, t => {
-                const {
-                    message: s,
-                    response: i
-                } = t;
-                e(s, i, i && i.body)
-            }))
+                }).then(t => {
+                    const {
+                        statusCode: s,
+                        statusCode: i,
+                        headers: r,
+                        body: o
+                    } = t;
+                    e(null, {
+                        status: s,
+                        statusCode: i,
+                        headers: r,
+                        body: o
+                    }, o)
+                }, t => {
+                    const {
+                        message: s,
+                        response: i
+                    } = t;
+                    e(s, i, i && i.body)
+                }))
         }
         post(t, e = (() => {})) {
-            if (t.body && t.headers && !t.headers["Content-Type"] && (t.headers["Content-Type"] = "application/x-www-form-urlencoded"), t.headers && delete t.headers["Content-Length"], this.isSurge() || this.isLoon()) this.isSurge() && this.isNeedRewrite && (t.headers = t.headers || {}, Object.assign(t.headers, {
-                "X-Surge-Skip-Scripting": !1
-            })), $httpClient.post(t, (t, s, i) => {
-                !t && s && (s.body = i, s.statusCode = s.status), e(t, s, i)
-            });
-            else if (this.isQuanX()) t.method = "POST", this.isNeedRewrite && (t.opts = t.opts || {}, Object.assign(t.opts, {
-                hints: !1
-            })), $task.fetch(t).then(t => {
-                const {
-                    statusCode: s,
-                    statusCode: i,
-                    headers: r,
-                    body: o
-                } = t;
-                e(null, {
-                    status: s,
-                    statusCode: i,
-                    headers: r,
-                    body: o
-                }, o)
-            }, t => e(t));
+            if (t.body && t.headers && !t.headers["Content-Type"] && (t.headers["Content-Type"] = "application/x-www-form-urlencoded"), t.headers && delete t.headers["Content-Length"], this.isSurge() || this.isLoon())
+                this.isSurge() && this.isNeedRewrite && (t.headers = t.headers || {}, Object.assign(t.headers, {
+                        "X-Surge-Skip-Scripting": !1
+                    })), $httpClient.post(t, (t, s, i) => {
+                    !t && s && (s.body = i, s.statusCode = s.status),
+                    e(t, s, i)
+                });
+            else if (this.isQuanX())
+                t.method = "POST", this.isNeedRewrite && (t.opts = t.opts || {}, Object.assign(t.opts, {
+                        hints: !1
+                    })), $task.fetch(t).then(t => {
+                    const {
+                        statusCode: s,
+                        statusCode: i,
+                        headers: r,
+                        body: o
+                    } = t;
+                    e(null, {
+                        status: s,
+                        statusCode: i,
+                        headers: r,
+                        body: o
+                    }, o)
+                }, t => e(t));
             else if (this.isNode()) {
                 this.initGotEnv(t);
                 const {
@@ -577,21 +633,26 @@ function Env(t, e) {
                 S: s.getMilliseconds()
             };
             /(y+)/.test(t) && (t = t.replace(RegExp.$1, (s.getFullYear() + "").substr(4 - RegExp.$1.length)));
-            for (let e in i) new RegExp("(" + e + ")").test(t) && (t = t.replace(RegExp.$1, 1 == RegExp.$1.length ? i[e] : ("00" + i[e]).substr(("" + i[e]).length)));
+            for (let e in i)
+                new RegExp("(" + e + ")").test(t) && (t = t.replace(RegExp.$1, 1 == RegExp.$1.length ? i[e] : ("00" + i[e]).substr(("" + i[e]).length)));
             return t
         }
         msg(e = t, s = "", i = "", r) {
             const o = t => {
-                if (!t) return t;
-                if ("string" == typeof t) return this.isLoon() ? t : this.isQuanX() ? {
-                    "open-url": t
-                } : this.isSurge() ? {
+                if (!t)
+                    return t;
+                if ("string" == typeof t)
+                    return this.isLoon() ? t : this.isQuanX() ? {
+                        "open-url": t
+                    }
+                 : this.isSurge() ? {
                     url: t
-                } : void 0;
+                }
+                 : void 0;
                 if ("object" == typeof t) {
                     if (this.isLoon()) {
                         let e = t.openUrl || t.url || t["open-url"],
-                            s = t.mediaUrl || t["media-url"];
+                        s = t.mediaUrl || t["media-url"];
                         return {
                             openUrl: e,
                             mediaUrl: s
@@ -599,7 +660,7 @@ function Env(t, e) {
                     }
                     if (this.isQuanX()) {
                         let e = t["open-url"] || t.url || t.openUrl,
-                            s = t["media-url"] || t.mediaUrl;
+                        s = t["media-url"] || t.mediaUrl;
                         return {
                             "open-url": e,
                             "media-url": s
@@ -615,11 +676,16 @@ function Env(t, e) {
             };
             if (this.isMute || (this.isSurge() || this.isLoon() ? $notification.post(e, s, i, o(r)) : this.isQuanX() && $notify(e, s, i, o(r))), !this.isMuteLog) {
                 let t = ["", "==============📣系统通知📣=============="];
-                t.push(e), s && t.push(s), i && t.push(i), console.log(t.join("\n")), this.logs = this.logs.concat(t)
+                t.push(e),
+                s && t.push(s),
+                i && t.push(i),
+                console.log(t.join("\n")),
+                this.logs = this.logs.concat(t)
             }
         }
         log(...t) {
-            t.length > 0 && (this.logs = [...this.logs, ...t]), console.log(t.join(this.logSeparator))
+            t.length > 0 && (this.logs = [...this.logs, ...t]),
+            console.log(t.join(this.logSeparator))
         }
         logErr(t, e) {
             const s = !this.isSurge() && !this.isQuanX() && !this.isLoon();
@@ -630,8 +696,11 @@ function Env(t, e) {
         }
         done(t = {}) {
             const e = (new Date).getTime(),
-                s = (e - this.startTime) / 1e3;
-            this.log("", `🔔${this.name}, 结束! 🕛 ${s} 秒`), this.log(), (this.isSurge() || this.isQuanX() || this.isLoon()) && $done(t)
+            s = (e - this.startTime) / 1e3;
+            this.log("", `🔔${this.name}, 结束! 🕛 ${s} 秒`),
+            this.log(),
+            (this.isSurge() || this.isQuanX() || this.isLoon()) && $done(t)
         }
-    }(t, e)
+    }
+    (t, e)
 }
