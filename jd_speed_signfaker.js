@@ -680,7 +680,7 @@ function invite2() {
     "jbGBRBPo5DmwB9ntTCSVOGXuh1YQyccCuZpWwb3PlIc=",
     "wXX9SjXOdYMWe5Ru/1+x9A==",
     "mCvmrmFghpDCLcL3VZs53BkAhucziHAYn3HhPmURJJE="
-  ][Math.floor((Math.random() * 3))]
+  ][Math.floor((Math.random() * 5))]
   let headers = {
     'Host': 'api.m.jd.com',
     'accept': 'application/json, text/plain, */*',
