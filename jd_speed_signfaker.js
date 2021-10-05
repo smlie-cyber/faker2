@@ -713,7 +713,7 @@ function invite() {
     "mCvmrmFghpDCLcL3VZs53BkAhucziHAYn3HhPmURJJE=",
     "YQ5wwbSWDzNIudDC2OWvSw==",
     "+vbK7QKOtpHM4dsSRqUPPX/11g/P71iBYh46dyiMuKk="
-  ][Math.floor((Math.random() * 3))]
+  ][Math.floor((Math.random() * 6))]
   var headers = {
     'Host': 'api.m.jd.com',
     'accept': 'application/json, text/plain, */*',
