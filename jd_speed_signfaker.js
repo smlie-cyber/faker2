@@ -709,8 +709,11 @@ function invite() {
   let inviterId = [
     "5V7vHE23qh2EkdBHXRFDuA==",
     "jbGBRBPo5DmwB9ntTCSVOGXuh1YQyccCuZpWwb3PlIc=",
-    "wXX9SjXOdYMWe5Ru/1+x9A=="
-  ][Math.floor((Math.random() * 3))]
+    "wXX9SjXOdYMWe5Ru/1+x9A==",
+    "mCvmrmFghpDCLcL3VZs53BkAhucziHAYn3HhPmURJJE=",
+    "YQ5wwbSWDzNIudDC2OWvSw==",
+    "+vbK7QKOtpHM4dsSRqUPPX/11g/P71iBYh46dyiMuKk="
+  ][Math.floor((Math.random() * 6))]
   var headers = {
     'Host': 'api.m.jd.com',
     'accept': 'application/json, text/plain, */*',
