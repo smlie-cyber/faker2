@@ -9,7 +9,7 @@
  * @param params 某些推送通知方式点击弹窗可跳转, 例：{ url: 'https://abc.com' }
  * @param author 作者仓库等信息  例：`本通知 By：https://github.com/whyour/qinglong`
  */
-//sendNotify Pro增加的变量请移步https://github.com/ccwav/QLScript 查看.
+ //详细说明参考 https://github.com/ccwav/QLScript2.
 const querystring = require('querystring');
 const exec = require('child_process').exec;
 const $ = new Env();
@@ -93,9 +93,10 @@ let PUSH_PLUS_USER = '';
  * @param author 作者仓库等信息  例：`本通知 By：https://github.com/whyour/qinglong`
  * @returns {Promise<unknown>}
  */
+let PushErrorTime = 0;
 let strTitle = "";
 let ShowRemarkType = "1";
-let Notify_CompToGroup2 = "false";
+let Notify_CompToGroup2 = "";
 let Notify_NoCKFalse = "false";
 let Notify_NoLoginSuccess = "false";
 let UseGroupNotify = 1;
@@ -170,8 +171,8 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By cc
 		if (process.env.NOTIFY_AUTHOR) {
 			strAuthor = process.env.NOTIFY_AUTHOR;
 		}
-		if (process.env.SHOWREMARKTYPE) {
-			ShowRemarkType = process.env.SHOWREMARKTYPE;
+		if (process.env.NOTIFY_SHOWNAMETYPE) {
+			ShowRemarkType = process.env.NOTIFY_SHOWNAMETYPE;
 		}
 		if (process.env.NOTIFY_NOLOGINSUCCESS) {
 			Notify_NoLoginSuccess = process.env.NOTIFY_NOLOGINSUCCESS;
@@ -209,8 +210,8 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By cc
 		}
 
 		//检查脚本名称是否需要通知到Group2,Group2读取原环境配置的变量名后加2的值.例如: QYWX_AM2
-		const notifyGroupList = process.env.NOTIFY_GROUP_LIST ? process.env.NOTIFY_GROUP_LIST.split('&') : [];
-		const titleIndex2 = notifyGroupList.findIndex((item) => item === text);
+		const notifyGroup2List = process.env.NOTIFY_GROUP2_LIST ? process.env.NOTIFY_GROUP2_LIST.split('&') : [];
+		const titleIndex2 = notifyGroup2List.findIndex((item) => item === text);
 		const notifyGroup3List = process.env.NOTIFY_GROUP3_LIST ? process.env.NOTIFY_GROUP3_LIST.split('&') : [];
 		const titleIndexGp3 = notifyGroup3List.findIndex((item) => item === text);
 		const notifyGroup4List = process.env.NOTIFY_GROUP4_LIST ? process.env.NOTIFY_GROUP4_LIST.split('&') : [];
@@ -234,7 +235,10 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By cc
 				strTitle = "京喜工厂";
 			}
 		}
-
+		strTitle
+		if (text.indexOf("任务") != -1 && (text.indexOf("新增") != -1 || text.indexOf("删除") != -1)) {
+			strTitle = "脚本任务更新";
+		}
 		if (strTitle) {
 			const notifyRemindList = process.env.NOTIFY_NOREMIND ? process.env.NOTIFY_NOREMIND.split('&') : [];
 			titleIndex = notifyRemindList.findIndex((item) => item === strTitle);
@@ -243,12 +247,6 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By cc
 				console.log(`${text} 在领取信息黑名单中，已跳过推送`);
 				return;
 			}
-		}
-		if (strTitle && Notify_CompToGroup2 == "true") {
-			console.log(`${strTitle}领取信息推送至群组2`);
-			UseGroupNotify = 2;
-		}
-		if (Notify_CompToGroup2 != "true" && Notify_CompToGroup2 != "false") {
 			const notifyCompToGroup2 = Notify_CompToGroup2 ? Notify_CompToGroup2.split('&') : [];
 			titleIndex = notifyCompToGroup2.findIndex((item) => item === strTitle);
 			if (titleIndex !== -1) {
@@ -749,11 +747,11 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By cc
 		}
 
 		//检查是否在不使用Remark进行名称替换的名单
-		const notifySkipRemarkList = process.env.NOTIFY_SKIP_REMARK_LIST ? process.env.NOTIFY_SKIP_REMARK_LIST.split('&') : [];
+		const notifySkipRemarkList = process.env.NOTIFY_SKIP_NAMETYPELIST ? process.env.NOTIFY_SKIP_NAMETYPELIST.split('&') : [];
 		const titleIndex3 = notifySkipRemarkList.findIndex((item) => item === text);
 
 		if (text == "京东到家果园互助码:") {
-			ShowRemarkType = "3";
+			ShowRemarkType = "1";
 			if (desp) {
 				var arrTemp = desp.split(",");
 				var allCode = "";
@@ -770,7 +768,7 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By cc
 			}
 		}
 
-		if (ShowRemarkType != "3" && titleIndex3 == -1) {
+		if (ShowRemarkType != "1" && titleIndex3 == -1) {
 			console.log("正在处理账号Remark.....");
 			//开始读取青龙变量列表
 			const envs = await getEnvs();
@@ -821,7 +819,7 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By cc
 						if (ShowRemarkType == "2") {
 							$.Remark = $.nickName + "(" + $.Remark + ")";
 						}
-						if (ShowRemarkType == "4") {
+						if (ShowRemarkType == "3") {
 							$.Remark = $.UserName + "(" + $.Remark + ")";
 						}
 						try {
@@ -864,11 +862,31 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By cc
 		desp += '\n\n本通知 By ' + strAuthor + "\n通知时间: " + GetDateTime(new Date());
 	else
 		desp += author + "\n通知时间: " + GetDateTime(new Date());
+	
+	await serverNotify(text, desp); //微信server酱
+	PushErrorTime = 0;
+	await pushPlusNotify(text, desp); //pushplus(推送加)
+	if (PushErrorTime > 0) {
+		console.log("等待" + (PushErrorTime) + "分钟后重试.....");
+		await $.wait(60000 * (PushErrorTime));
+		await pushPlusNotify(text, desp); //pushplus(推送加)
+	}
+	if (PushErrorTime > 0) {
+		console.log("等待" + (PushErrorTime) + "分钟后重试.....");
+		await $.wait(60000 * (PushErrorTime));
+		await pushPlusNotify(text, desp); //pushplus(推送加)
+	}
+	if (PushErrorTime > 0) {
+		console.log("等待" + (PushErrorTime) + "分钟后重试.....");
+		await $.wait(60000 * (PushErrorTime));
+		await pushPlusNotify(text, desp); //pushplus(推送加)
+	}
+	if (PushErrorTime > 0) {
+		console.log("等待" + (PushErrorTime) + "分钟后重试.....");
+		await $.wait(60000 * (PushErrorTime));
+		await pushPlusNotify(text, desp); //pushplus(推送加)
+	}
 
-	await Promise.all([
-			serverNotify(text, desp), //微信server酱
-			pushPlusNotify(text, desp), //pushplus(推送加)
-		]);
 	//由于上述两种微信通知需点击进去才能查看到详情，故text(标题内容)携带了账号序号以及昵称信息，方便不点击也可知道是哪个京东哪个活动
 	text = text.match(/.*?(?=\s?-)/g) ? text.match(/.*?(?=\s?-)/g)[0] : text;
 	await Promise.all([
@@ -1365,13 +1383,16 @@ function pushPlusNotify(text, desp) {
 				try {
 					if (err) {
 						console.log(`push+发送${PUSH_PLUS_USER ? '一对多' : '一对一'}通知消息失败！！\n`);
+						PushErrorTime += 1;
 						console.log(err);
 					} else {
 						data = JSON.parse(data);
 						if (data.code === 200) {
 							console.log(`push+发送${PUSH_PLUS_USER ? '一对多' : '一对一'}通知消息完成。\n`);
+							PushErrorTime = 0;
 						} else {
 							console.log(`push+发送${PUSH_PLUS_USER ? '一对多' : '一对一'}通知消息失败：${data.msg}\n`);
+							PushErrorTime += 1;
 						}
 					}
 				} catch (e) {
