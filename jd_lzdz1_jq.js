@@ -3,7 +3,7 @@
 
 https://lzdz1-isv.isvjcloud.com/dingzhi/dz/openCard/activity?activityId=dz20210929skcnurdk34jkkl3dsf4awqw
 */
-const $ = new Env("月满金秋 佳节聚“惠”");
+const $ = new Env("金秋好物盛典 福利来袭");
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [], cookie = '', message = '';
