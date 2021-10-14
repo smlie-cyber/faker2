@@ -61,7 +61,7 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
       }
       await info()
       if (InviterPin.length != 0) {
-        await help()
+        await help("18688849123_p")
       } else {
         await help2("18688849123_p")
 
