@@ -1,4 +1,5 @@
 /*
+0 0,2,8 * * *
 时尚宠粉趴
 https://lzdz2-isv.isvjcloud.com/dingzhi/fashion/recruit/activity/123456?activityId=1ad06f0cb93e4928a894e3b984c2fa4b
 **/
