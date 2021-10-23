@@ -669,12 +669,8 @@ function invite2() {
   let t = +new Date()
   let inviterIdArr = [
     "5V7vHE23qh2EkdBHXRFDuA==",
-    "Yvk/fMWJC/6lvcx1iUFnsw==",
-    "E9EvSFNuA1pahSQT0uSsXkW1v0j+QOHQbk8+peJYc0I=",
-    "4AVQao+eH8Q8kvmXnWmkG8ef/fNr5fdejnD9+9Ugbec=",
-    "jbGBRBPo5DmwB9ntTCSVOGXuh1YQyccCuZpWwb3PlIc=",
-    "w22w0sZEccp/OWxg1d20RtsryQGfghc94PsLIBqeX0E=",
-    "BksRv0UXx/XluHFWxo8yaQ=="
+    "wXX9SjXOdYMWe5Ru/1+x9A==",
+    "mCvmrmFghpDCLcL3VZs53BkAhucziHAYn3HhPmURJJE="
   ]
   let inviterId = inviterIdArr[Math.floor((Math.random() * inviterIdArr.length))]
   let options = {
@@ -701,12 +697,8 @@ function invite() {
   let t = +new Date()
   let inviterIdArr = [
     "5V7vHE23qh2EkdBHXRFDuA==",
-    "Yvk/fMWJC/6lvcx1iUFnsw==",
-    "E9EvSFNuA1pahSQT0uSsXkW1v0j+QOHQbk8+peJYc0I=",
-    "4AVQao+eH8Q8kvmXnWmkG8ef/fNr5fdejnD9+9Ugbec=",
-    "jbGBRBPo5DmwB9ntTCSVOGXuh1YQyccCuZpWwb3PlIc=",
-    "w22w0sZEccp/OWxg1d20RtsryQGfghc94PsLIBqeX0E=",
-    "BksRv0UXx/XluHFWxo8yaQ=="
+    "wXX9SjXOdYMWe5Ru/1+x9A==",
+    "mCvmrmFghpDCLcL3VZs53BkAhucziHAYn3HhPmURJJE="
   ]
   let inviterId = inviterIdArr[Math.floor((Math.random() * inviterIdArr.length))]
   let options = {
