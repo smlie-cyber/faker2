@@ -2,7 +2,7 @@
 双十一无门槛红包🧧
 ck1助力 作者呱呱呱
 其余助力ck1
-https://u.jd.com/3IXZhmo
+https://u.jd.com/3K9D5Kc
 跳转到app 可查看助力情况
 1 0,12,18 * * *
 */
@@ -52,9 +52,9 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
     }
   }
   if(message){
-    $.msg($.name, ``, `${message}\nhttps://u.jd.com/3IXZhmo\n\n跳转到app 可查看助力情况`);
+    $.msg($.name, ``, `${message}\nhttps://u.jd.com/3K9D5Kc\n\n跳转到app 可查看助力情况`);
     if ($.isNode()){
-      await notify.sendNotify(`${$.name}`, `${message}\n\nhttps://u.jd.com/3IXZhmo\n跳转到app 可查看助力情况`);
+      await notify.sendNotify(`${$.name}`, `${message}\n\nhttps://u.jd.com/3K9D5Kc\n跳转到app 可查看助力情况`);
     }
   }
 })()
@@ -230,7 +230,7 @@ function getUrl1() {
 function getUrl() {
   return new Promise(resolve => {
     const options = {
-      url: `https://u.jd.com/3IXZhmo?s=${$.shareCode}`,
+      url: `https://u.jd.com/3K9D5Kc?s=${$.shareCode}`,
       followRedirect:false,
       headers: {
         'Cookie': `${cookie} ${newCookie}`,
