@@ -1,6 +1,6 @@
 /*
 双十一无门槛红包
-cron 0,30 0,12,19,22 * * * jd_red1.js
+cron 0,30 0,12,20,22 * * * jd_HongBao.js
 添加环境变量FLCODE 如需自己吃返利，请填写该变量（https://u.jd.com/后面的英文）
 * */
 const $ = new Env('抢双11无门槛红包');
