@@ -1,6 +1,7 @@
 /*
 双十一无门槛红包
-cron 0,30 0,12,19
+cron 0,30 0,12,19 jd_red.js
+默认给脚本作者返利，若需要返利给自己，请自己修改返利变量FLCODE
 * */
 const $ = new Env('抢双11无门槛红包');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
