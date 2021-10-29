@@ -3,7 +3,7 @@
 
 Faker维护仓库，收集全网目前能正常使用的脚本。
 
-#### 每日更新 TG群:https://t.me/jdscrip
+#### [点击直达频道](https://t.me/pandaqx)
 
 [![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=shufflewzc&bg_color=30,e96443,904e95&title_color=fff&text_color=fff)](https://github.com/anuraghazra/github-readme-stats)
 
