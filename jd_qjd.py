@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*
-#全民抢京豆（8.6-8.16)
+#全民抢京豆
 '''
 项目名称: JD-Script / jd_qjd
 Author: Curtin
