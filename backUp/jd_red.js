@@ -1,7 +1,7 @@
 /*
 双十一无门槛红包
 cron 0,30 0,12,19 jd_red.js
-默认给脚本作者返利，若需要返利给自己，请自己修改返利变量FLCODE
+添加环境变量FLCODE 如需自己吃返利，请填写该变量（https://u.jd.com/后面的英文）
 * */
 const $ = new Env('抢双11无门槛红包');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -56,7 +56,7 @@ async function main() {
     $.max = false;
     $.hotFlag = false;
     const flCodeArr = ['3K9D5Kc', '3IVMKm8', '3I9UVcJ', '3IXbyRK', '3wVdViu'];
-    const flCode = flCodeArr[Math.floor((Math.random() * flCodeArr.length))];
+    const flCode = $.isNode() ? (process.env.FLCODE ? process.env.FLCODE : flCodeArr[Math.floor((Math.random() * flCodeArr.length))]) : flCodeArr[Math.floor((Math.random() * flCodeArr.length))];
     $.code = flCode;
     for (let i = 0; i < 10 && !$.max; i++) {
         $.newCookie = '';
@@ -191,7 +191,7 @@ async function getCoupons(shareCode) {
                         if (res.msg) {
                             console.log('异常：' + res.msg)
                         }
-                        if (res.msg.indexOf('上限') !== -1||res.msg.indexOf('未登录') !== -1) {
+                        if (res.msg.indexOf('上限') !== -1 || res.msg.indexOf('未登录') !== -1) {
                             $.max = true;
                         }
                         if ($.shareId && typeof res.data !== 'undefined' && typeof res.data.joinNum !== 'undefined') {
