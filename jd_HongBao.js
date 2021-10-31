@@ -56,7 +56,7 @@ async function main() {
     $.max = false;
     $.hotFlag = false;
     const flCodeArr = ['3K9D5Kc', '3IVMKm8', '3I9UVcJ', '3IXbyRK', '3wVdViu'];
-    const flCode = $.isNode() ? (process.env.FLCODE ? process.env.FLCODE : flCodeArr[Math.floor((Math.random() * flCodeArr.length))]) : flCodeArr[Math.floor((Math.random() * flCodeArr.length))];
+    const flCode = $.isNode() ? (process.env.JFFLCODE ? process.env.JFFLCODE : flCodeArr[Math.floor((Math.random() * flCodeArr.length))]) : flCodeArr[Math.floor((Math.random() * flCodeArr.length))];
     $.code = flCode;
     for (let i = 0; i < 10 && !$.max; i++) {
         $.newCookie = '';
