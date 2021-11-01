@@ -94,10 +94,10 @@ async function main() {
         await getCoupons("");
       }
     }
-    await $.wait(2000);
+    await $.wait(1000);
   }
   if ($.index === 1 && !$.hotFlag) {
-      await $.wait(2000)
+      await $.wait(1000)
       await mainInfo()
   }
 }
