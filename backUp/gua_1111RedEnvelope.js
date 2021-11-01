@@ -4,7 +4,7 @@ ck1助力 作者
 其余助力ck1
 https://u.jd.com/3K9D5Kc
 跳转到app 可查看助力情况
-1 0,12,18 * * * gua_1111RedEnvelope.js
+0 0,12,18 * * * gua_1111RedEnvelope.js
 */
 
 let rebateCodes = ''
