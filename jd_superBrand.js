@@ -59,6 +59,8 @@ let shareList = [];
             }
         }
     }
+    await getShareCode('tewu.json')
+    allShareList = [...new Set([...allShareList, ...($.shareCode || [])])]
     console.log(`\n-----------------------互助----------------------\n`)
     for (let i = 0; i < cookiesArr.length; i++) {
         let cookie = cookiesArr[i];
@@ -90,6 +92,31 @@ let shareList = [];
     $.done();
 });
 
+function getShareCode(name) {
+  return new Promise(resolve => {
+    $.get({
+      url: "https://gitee.com/KingRan521/JD-Scripts/raw/master/shareCodes/"+name,
+      headers: {
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      }
+    }, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} API请求失败，请检查网路重试`);
+        } else {
+          console.log(`优先账号内部互助`);
+          $.shareCode = JSON.parse(data);
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
+
 async function main(cookie) {
     let userName = decodeURIComponent(cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1]);
     let cardInfo = await takeRequest(cookie,'showSecondFloorCardInfo',`{"source":"card"}`);
@@ -111,6 +138,18 @@ async function main(cookie) {
     let taskList = taskListInfo.result.taskList || [];
     console.log(`\n${userName},获取活动详情成功`);
     let encryptProjectId = activityBaseInfo.encryptProjectId;
+    let activityCardInfo = cardInfo.result.activityCardInfo;
+    if(activityCardInfo.divideTimeStatus === 1 && activityCardInfo.divideStatus === 0 && activityCardInfo.cardStatus === 1){
+        console.log(`${userName},去瓜分`);
+        let lotteryInfo = await takeRequest(cookie,'superBrandTaskLottery',`{"source":"card","activityId":${activityId},"encryptProjectId":"${encryptProjectId}","tag":"divide"}`);
+        console.log(`结果：${JSON.stringify(lotteryInfo)}`);
+        return ;
+    }else if(activityCardInfo.divideTimeStatus === 1 && activityCardInfo.divideStatus === 1 && activityCardInfo.cardStatus === 1){
+        console.log(`${userName},已瓜分`);
+        return ;
+    }else{
+        console.log(`${userName},未集齐或者未到瓜分时间`);
+    }
     await $.wait(2000);
     for (let i = 0; i < taskList.length; i++) {
         let oneTask = taskList[i];
@@ -190,7 +229,7 @@ async function takeRequest(cookie,functionId,bodyInfo){
                 }
             } catch (e) {
                 console.log(data);
-                $.logErr(e, resp)
+                //$.logErr(e, resp)
             } finally {
                 resolve(data.data || {});
             }
