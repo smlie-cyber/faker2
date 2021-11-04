@@ -3,8 +3,8 @@
  * /
  * 基于温某人大佬的脚本修改
  * 助力逻辑：优先助力互助码环境变量，中午10点之后再给我助力
- * TG交流群：https://t.me/jd_zero205
- * TG通知频道：https://t.me/jd_zero205_tz
+ * TG交流群：https://t.me/jd_shufflewzc
+ * TG通知频道：https://t.me/jd_shufflewzc_tz
  * /
 https://raw.githubusercontent.com/Wenmoux/scripts/master/jd/jd_fcdyj.js
 已支持IOS双京东账号, Node.js支持N个京东账号
@@ -93,7 +93,7 @@ const JD_API_HOST = `https://api.m.jd.com`;
                 cookie = cookiesArr[i];
                 $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
                 $.canRun = true
-                console.log(`\n${$.UserName} 去助力【zero205】\n`)
+                console.log(`\n${$.UserName} 去助力 \n`)
                 for (let j = 0; j < $.authorCode.length; j++) {
                     let item = $.authorCode[j];
                     await help(item.redEnvelopeId, item.inviter, 1)
@@ -319,7 +319,7 @@ function help(rid, inviter, type) {
 function getAuthorShareCode() {
     return new Promise(resolve => {
         $.get({
-            url: "https://raw.fastgit.org/zero205/updateTeam/main/shareCodes/dyj.json",
+            url: "https://raw.fastgit.org/shufflewzc/updateTeam/main/shareCodes/dyj.json",
             headers: {
                 "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
             }
