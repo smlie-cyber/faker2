@@ -4,6 +4,7 @@ APP首页下滑,任务，互助
 cron 10 9,13,16,19,20 2-8 11 * https://raw.githubusercontent.com/star261/jd/main/scripts/jd_superBrand.js
 * */
 const $ = new Env('双11特务');
+const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
