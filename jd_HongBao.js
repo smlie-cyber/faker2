@@ -52,7 +52,8 @@ $.shareCode = '';
 
 async function main() {
     let userName = decodeURIComponent(cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1]);
-    $.UA = `jdapp;iPhone;10.2.2;14.3;${randomString(40)};M/5.0;network/wifi;ADID/;model/iPhone12,1;addressid/4199175193;appBuild/167863;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1;`    $.max = false;
+    $.UA = `jdapp;iPhone;10.2.2;14.3;${randomString(40)};M/5.0;network/wifi;ADID/;model/iPhone12,1;addressid/4199175193;appBuild/167863;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1;`
+    $.max = false;
     $.hotFlag = false;
     const flCodeArr = ['yI2pG7N', 'yI2EGVm', '3IVMKm8', '3I9UVcJ', '3IXbyRK', '3wVdViu'];
     const flCode = $.isNode() ? (process.env.FLCODE ? process.env.FLCODE : flCodeArr[Math.floor((Math.random() * flCodeArr.length))]) : flCodeArr[Math.floor((Math.random() * flCodeArr.length))];
