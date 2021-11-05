@@ -1,5 +1,5 @@
 /**
-10 0,20 * * * rush_vivo.js
+30 0 * * * jd_vivo.js
 **/
 const $ = new Env("Phone");
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -48,12 +48,13 @@ if ($.isNode()) {
                 'a579f66d2c1b4b548f1f33d180e9847d',
                 '99b0e8fc06a449dfa6f00298b4dd91eb',
                 'f53e3b7130604ed8ab1bf50c89c3041f',
+                'b9ad6ddd04134b458773e5a1543468bd'
             ]
             $.bean = 0;
             $.ADID = getUUID('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 1);
             $.UUID = getUUID('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-            $.authorCode = authorCodeList[random(0, authorCodeList.length)]
-            // $.authorCode = ownCode ? ownCode : authorCodeList[random(0, authorCodeList.length)]
+            // $.authorCode = authorCodeList[random(0, authorCodeList.length)]
+            $.authorCode = ownCode ? ownCode : authorCodeList[random(0, authorCodeList.length)]
             $.authorNum = `${random(1000000, 9999999)}`
             $.activityId = 'dz2110100000406501'
             $.activityShopId = '1000004065'
