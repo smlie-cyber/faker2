@@ -49,7 +49,7 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
     return
   }
   console.log('整点跑 红包几率大点')
-  $.shareCode = '8ZOzB'
+  $.shareCode = 'HEEMT'
   for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
     if (cookie) {
