@@ -50,16 +50,17 @@ https://www.notion.so/Cent-OS-7-6-1c598629675145988b43a37998a1604a
 > ***You have used or copied any script made by yourself in this warehouse, it is deemed to have accepted this statement, please read it carefully*** 
 
 
-## Special thanks to:
+## Special thanks to: new scripts actor
 
 
 * [@NobyDa](https://github.com/NobyDa)
-* [@chavyleung](https://github.com/chavyleung)
-* [@liuxiaoyucc](https://github.com/liuxiaoyucc)
-* [@Zero-S1](https://github.com/Zero-S1)
-* [@uniqueque](https://github.com/uniqueque)
-* [@nzw9314](https://github.com/nzw9314)
-* [@Andy Woo](https://t.me/update_help_group)「青龙互助研究院支持」
+* [@Andy Woo](https://t.me/update_help_group)
 * [@Oreo](https://github.com/Oreomeow) 「青龙Faker仓库一键安装配置」
+* [@Aaron-lv](https://github.com/Aaron-lv/sync) 「小小」
+* [@ccwav](https://github.com/ccwav/QLScript2) 「白嫖榜」
+* [@cdle](https://github.com/cdle/carry) 「老年人」
+* [@FKPYW](https://github.com/FKPYW/dongge) 「小埋」
+* [@Smiek2121](https://github.com/smiek2121/scripts) 「呱呱」
+* [@star261](https://github.com/star261/jd) 
 
 # 欢迎Pull Request！
