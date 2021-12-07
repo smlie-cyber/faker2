@@ -73,7 +73,7 @@ $.shareCodes = [];
   }
   let res2 = await getAuthorShareCode('https://raw.githubusercontent.com/shufflewzc/updateTeam/main/shareCodes/split.json')
   if (!res2) {
-    res2 = await getAuthorShareCode('ttps://raw.fastgit.org/shufflewzc/updateTeam/main/shareCodes/split.json')
+    res2 = await getAuthorShareCode('https://raw.fastgit.org/shufflewzc/updateTeam/main/shareCodes/split.json')
   }
   $.newShareCodes = [...new Set([...$.shareCodes, ...(res || []), ...(res2 || [])])]
   for (let i = 0; i < cookiesArr.length; i++) {
