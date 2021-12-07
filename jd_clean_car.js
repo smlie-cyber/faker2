@@ -1,8 +1,25 @@
+if (process.env.rush_clean != 'true') {
+    console.log('清空购物车默认不执行,需要请设置环境变量rush_clean为true')
+    return
+}
 /*
-let isRemove = process.env.JD_CART_REMOVE || false;    //是否清空，如果为false，则上面设置了多少就只删除多少条
-let removeSize = process.env.JD_CART_REMOVESIZE || 20; // 运行一次取消多全部已关注的商品。数字0表示不取关任何商品
-let isRemoveAll = process.env.JD_CART_REMOVEALL || true;    //是否清空，如果为false，则上面设置了多少就只删除多少条
-$.keywords = process.env.JD_CART_KEYWORDS || []
+https://github.com/FKPYW/dongge
+
+Special statement:
+- Any unlocking and decryption analysis scripts involved in the Script project released by this warehouse are only used for testing, learning and research, and are forbidden to be used for commercial purposes. Their legality, accuracy, completeness and effectiveness cannot be guaranteed. Please make your own judgment based on the situation. .
+
+- All resource files in this project are forbidden to be reproduced or published in any form by any official account or self-media.
+
+- This warehouse is not responsible for any script problems, including but not limited to any loss or damage caused by any script errors.
+
+- Any user who indirectly uses the script, including but not limited to establishing a VPS or disseminating it when certain actions violate national/regional laws or related regulations, this warehouse is not responsible for any privacy leakage or other consequences caused by this.
+
+- Do not use any content of the Script project for commercial or illegal purposes, otherwise you will be responsible for the consequences.
+
+- If any unit or individual believes that the script of the project may be suspected of infringing on their rights, they should promptly notify and provide proof of identity and ownership. We will delete the relevant script after receiving the certification document.
+
+- Anyone who views this item in any way or directly or indirectly uses any script of the Script item should read this statement carefully. This warehouse reserves the right to change or supplement this disclaimer at any time. Once you have used and copied any relevant scripts or rules of the Script project, you are deemed to have accepted this disclaimer.
+
 10 6,22 * * * rush_clean_car.js
 */
 const $ = new Env('清空购物车');
@@ -25,7 +42,6 @@ if ($.isNode()) {
     cookiesArr.reverse();
     cookiesArr = cookiesArr.filter(item => !!item);
 }
-let isRemove = process.env.JD_CART_REMOVE || false;    //是否清空，如果为false，则上面设置了多少就只删除多少条
 let removeSize = process.env.JD_CART_REMOVESIZE || 20; // 运行一次取消多全部已关注的商品。数字0表示不取关任何商品
 let isRemoveAll = process.env.JD_CART_REMOVEALL || true;    //是否清空，如果为false，则上面设置了多少就只删除多少条
 $.keywords = process.env.JD_CART_KEYWORDS || []
@@ -35,48 +51,42 @@ $.keywordsNum = 0;
         $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
         return;
     }
-    if (isRemove) {
-        console.log("准备清空购物车")
-        for (let i = 0; i < cookiesArr.length; i++) {
-            if (cookiesArr[i]) {
-                cookie = cookiesArr[i]
-                originCookie = cookiesArr[i]
-                newCookie = ''
-                $.UserName = decodeURIComponent(cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1])
-                $.index = i + 1;
-                $.isLogin = true;
-                $.nickName = '';
-                await checkCookie();
-                console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
-                if (!$.isLogin) {
-                    $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
-                    if ($.isNode()) {
-                        await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+    for (let i = 0; i < cookiesArr.length; i++) {
+        if (cookiesArr[i]) {
+            cookie = cookiesArr[i]
+            originCookie = cookiesArr[i]
+            newCookie = ''
+            $.UserName = decodeURIComponent(cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1])
+            $.index = i + 1;
+            $.isLogin = true;
+            $.nickName = '';
+            await checkCookie();
+            console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
+            if (!$.isLogin) {
+                $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
+                if ($.isNode()) {
+                    await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+                }
+                continue
+            }
+            await requireConfig();
+            do {
+                await getCart_xh();
+                $.keywordsNum = 0
+                if($.beforeRemove !== "0"){
+                    await cartFilter_xh(venderCart);
+                    if(parseInt($.beforeRemove) !== $.keywordsNum) await removeCart();
+                    else {
+                        console.log('由于购物车内的商品均包含关键字，本次执行将不删除购物车数据')
+                        break;
                     }
-                    continue
-                }
-                await requireConfig();
-                do {
-                    await getCart_xh();
-                    $.keywordsNum = 0
-                    if($.beforeRemove !== "0"){
-                        await cartFilter_xh(venderCart);
-                        if(parseInt($.beforeRemove) !== $.keywordsNum) await removeCart();
-                        else {
-                            console.log('由于购物车内的商品均包含关键字，本次执行将不删除购物车数据')
-                            break;
-                        }
-                    } else break;
-                } while(isRemoveAll && $.keywordsNum !== $.beforeRemove)
-                if ($.bean > 0) {
-                    message += `\n【京东账号${$.index}】${$.nickName || $.UserName} \n       └ 获得 ${$.bean} 京豆。`
-                }
+                } else break;
+            } while(isRemoveAll && $.keywordsNum !== $.beforeRemove)
+            if ($.bean > 0) {
+                message += `\n【京东账号${$.index}】${$.nickName || $.UserName} \n       └ 获得 ${$.bean} 京豆。`
             }
         }
-    } else {
-        console.log("不执行清空购物车，具体参数看脚本说明")
     }
-
 })()
     .catch((e) => {
         $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
