@@ -1,10 +1,15 @@
-const UA = require('./USER_AGENTS.js').USER_AGENT;
-
 const navigator = {
-  userAgent: UA,
+  userAgent: `jdapp;iPhone;10.1.0;14.3;${randomString(40)};network/wifi;model/iPhone12,1;addressid/4199175193;appBuild/167774;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1`,
   plugins: { length: 0 },
   language: "zh-CN",
 };
+function randomString(e) {
+  e = e || 32;
+  let t = "abcdef0123456789", a = t.length, n = "";
+  for (i = 0; i < e; i++)
+    n += t.charAt(Math.floor(Math.random() * a));
+  return n
+}
 const screen = {
   availHeight: 812,
   availWidth: 375,
@@ -2057,8 +2062,8 @@ function _jdJrTdCommonsObtainPin(t) {
   return u
 };
 
-function getBody(url = document.location.href) {
-  navigator.userAgent = UA
+function getBody(userAgent, url = document.location.href) {
+  navigator.userAgent = userAgent
   let href = url
   let choose = /((https?:)\/\/([^\/]+))(.+)/.exec(url)
   let [, origin, protocol, host, pathname] = choose;
