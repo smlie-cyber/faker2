@@ -1,5 +1,10 @@
 #Source: https://github.com/Hyper-Beast
 
+"""
+cron: 20 20 * * *
+new Env('京东试用成功通知');
+"""
+
 import requests
 import json
 import time
