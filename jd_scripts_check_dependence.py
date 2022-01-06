@@ -22,7 +22,7 @@ import time
 
 # 如果运行完本脚本仍然出错，请使用Faker一键部署脚本重新部署
 
-txtx = "青龙配置文件中的config中填写下列变量启用对应功能\n\n增加缺失依赖文件(推荐)\n填写export ec_fix_dep=\"true\"\n更新老旧依赖文件(日常使用别填，默认的依赖我使用的魔改版本，非必要别选)\n如果选择使用请使用对应code文件等相关文件：https://github.com/spiritLHL/dependence_config \n填写export ec_ref_dep=\"true\"\n"
+txtx = "青龙配置文件中的config中填写下列变量启用对应功能\n\n增加缺失依赖文件(推荐)\n填写export ec_fix_dep=\"true\"\n"
 print(txtx)
 
 try:
