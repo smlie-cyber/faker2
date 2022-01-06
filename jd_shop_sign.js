@@ -3,14 +3,7 @@
 ============Quantumultx===============
 [task_local]
 #店铺签到
-15 2,14 * * * https://raw.githubusercontent.com/KingRan/JDJB/main/jd_shop_sign.js, tag=店铺签到, enabled=true
-===========Loon============
-[Script]
-cron "15 2,14 * * *" script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_shop_sign.js,tag=店铺签到
-============Surge=============
-店铺签到 = type=cron,cronexp="15 2,14 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_shop_sign.js
-===========小火箭========
-店铺签到 = type=cron,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_shop_sign.jss, cronexpr="15 2,14 * * *", timeout=3600, enable=true
+0 0 * * * jd_shop_sign.js
 */
 const $ = new Env('店铺签到');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -25,26 +18,27 @@ let vender=''
 let num=0
 let shopname=''
 const token = [
-  "2B5C0F65AAB570D1736C8F24D1260D78",
-  "F932E5DE653968BB1D92A2DFFD5318C7",
-  "90DBB523AD134F61A8335D24728C8EB7",
-  "39415200CB5E286A4DB604A54C901A13",
-  "C5FAE6D9F9B94F606370A7A98A5F2E70",
-  "F5E2E3856C6FF1869CCE53153D237112",
-  "7A64973CD1A0873108CB2E4740A86D7D",
-  "F337196AC5F550B3B7896F3F80089793",
-  "45DBA1666FC56F3040F2F68396F1CDCE",
-  "237DB8682E64A21BF18833A10E246162",
-  "098FD50396245FA00EA629B20A533E3E",
-  "DFB0150982F11A1EFB81A5B1399B7BD1",
-  "F12032C7804D496FC82CCCBEDE205CA0",
-  "B52C0C73C735820922346460A4CE6CC4",
-  "9A2F9AFF0153C3D1DDD5C9516C468F52",
-  "2AEC5E975C792B413E569A4416C8F79D",
-  "88C72E9A4F342606C7C98C601CCB3196",
-  "7352D6FB71BEDDF0ACAC6E4057640894",
-  "329C618CD7B700B350C8CC8054B8622E",
-  "7BFD202E8D2D071F5E79B6E9D3892020"
+  // "2A8794EC8DA4659DDDA0DF0E1A2AF4AF",
+  // "A1E0F96C1D9DB38AE87202E13CE1FD1F",
+  // "6D180D5A0B6F4A210684757B0DAC6A38",
+  // "6FF6A61279897029F4DE69C341551CFC",
+  // "0FCE1975D7A168F5BE2DE89BF2AA784D",
+  // "9E2F2B62044E1AC059180A38BE06507D",
+  // "C96A69334CA12BCA81DE74335AC1B35E",
+  // "A406C4990D5C50702D8C425A03F8076E",
+  // "E0AB41AAE21BD9CA8E35CC0B9AA92FA7",
+  // "A20223553DF12E06C7644A1BD67314B6",
+  // "9621D787095D0030BE681B535F8499BE",
+  // "C718DA981DBB8CF73FAC7D5480733B43",
+  // "77A6C7B5C2BC9175521931ADE8E3B2E0",
+  // "5BEFC891C256D515C4F0F94F15989055",
+  // "B1482DB6CB72FBF33FFC90B2AB53D32C",
+  // "225A5186B854F5D0A36B5257BAA98739",
+  // "9115177F9D949CFB76D0DE6B8FC9D621",
+  // "AD73E1D98C83593E22802600D5F72B9B",
+  // "447EA174AB8181DD52EFDECEB4E59F16",
+  // "32204A01054F3D8F9A1DF5E5CFB4E7F4",
+  // "6B52B6FDF119B68A42349EEF6CEEC4FF"
 ]
 
 if ($.isNode()) {
@@ -86,7 +80,6 @@ if ($.isNode()) {
       }
       await dpqd()
       await showMsg()
-      await $.wait(1500)
     }
   }
   if ($.isNode() && allMessage) {
@@ -105,7 +98,6 @@ async function dpqd(){
   for (var j = 0; j < token.length; j++) {
     num=j+1
     if (token[j]=='') {continue}
-    getUA()
     await getvenderId(token[j])
     if (vender=='') {continue}
     await getvenderName(vender)
@@ -126,8 +118,7 @@ function getvenderId(token) {
         "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
         "cookie": cookie,
         "referer": 'https://h5.m.jd.com/',
-        "User-Agent": $.UA
-        // "User-Agent": `Mozilla/5.0 (Linux; U; Android 10; zh-cn; MI 8 Build/QKQ1.190828.002) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/79.0.3945.147 Mobile Safari/537.36 XiaoMi/MiuiBrowser/13.5.40`
+        "User-Agent": `Mozilla/5.0 (Linux; U; Android 10; zh-cn; MI 8 Build/QKQ1.190828.002) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/79.0.3945.147 Mobile Safari/537.36 XiaoMi/MiuiBrowser/13.5.40`
       }
     }
     $.get(options, (err, resp, data) => {
@@ -165,8 +156,7 @@ function getvenderName(venderId) {
         "accept-encoding": "gzip, deflate, br",
         "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
         "cookie": cookie,
-        "User-Agent": $.UA
-        // "User-Agent": `Mozilla/5.0 (Linux; U; Android 10; zh-cn; MI 8 Build/QKQ1.190828.002) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/79.0.3945.147 Mobile Safari/537.36 XiaoMi/MiuiBrowser/13.5.40`
+        "User-Agent": `Mozilla/5.0 (Linux; U; Android 10; zh-cn; MI 8 Build/QKQ1.190828.002) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/79.0.3945.147 Mobile Safari/537.36 XiaoMi/MiuiBrowser/13.5.40`
       }
     }
     $.get(options, (err, resp, data) => {
@@ -202,8 +192,7 @@ function getActivityInfo(token,venderId) {
         "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
         "cookie": cookie,
         "referer": `https://h5.m.jd.com/babelDiy/Zeus/2PAAf74aG3D61qvfKUM5dxUssJQ9/index.html?token=${token}&sceneval=2&jxsid=16105853541009626903&cu=true&utm_source=kong&utm_medium=jingfen&utm_campaign=t_1001280291_&utm_term=fa3f8f38c56f44e2b4bfc2f37bce9713`,
-        "User-Agent": $.UA
-        // "User-Agent": `Mozilla/5.0 (Linux; U; Android 10; zh-cn; MI 8 Build/QKQ1.190828.002) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/79.0.3945.147 Mobile Safari/537.36 XiaoMi/MiuiBrowser/13.5.40`
+        "User-Agent": `Mozilla/5.0 (Linux; U; Android 10; zh-cn; MI 8 Build/QKQ1.190828.002) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/79.0.3945.147 Mobile Safari/537.36 XiaoMi/MiuiBrowser/13.5.40`
       }
     }
     $.get(options, (err, resp, data) => {
@@ -246,8 +235,7 @@ function signCollectGift(token,venderId,activitytemp) {
         "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
         "cookie": cookie,
         "referer": `https://h5.m.jd.com/babelDiy/Zeus/2PAAf74aG3D61qvfKUM5dxUssJQ9/index.html?token=${token}&sceneval=2&jxsid=16105853541009626903&cu=true&utm_source=kong&utm_medium=jingfen&utm_campaign=t_1001280291_&utm_term=fa3f8f38c56f44e2b4bfc2f37bce9713`,
-        "User-Agent": $.UA
-        // "User-Agent": `Mozilla/5.0 (Linux; U; Android 10; zh-cn; MI 8 Build/QKQ1.190828.002) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/79.0.3945.147 Mobile Safari/537.36 XiaoMi/MiuiBrowser/13.5.40`
+        "User-Agent": `Mozilla/5.0 (Linux; U; Android 10; zh-cn; MI 8 Build/QKQ1.190828.002) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/79.0.3945.147 Mobile Safari/537.36 XiaoMi/MiuiBrowser/13.5.40`
       }
     }
     $.get(options, (err, resp, data) => {
@@ -279,8 +267,7 @@ function taskUrl(token,venderId) {
         "accept-language": "zh-CN,zh;q=0.9",
         "cookie": cookie,
         "referer": `https://h5.m.jd.com/`,
-        "User-Agent": $.UA
-        // "user-agent": `Mozilla/5.0 (Linux; U; Android 10; zh-cn; MI 8 Build/QKQ1.190828.002) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/79.0.3945.147 Mobile Safari/537.36 XiaoMi/MiuiBrowser/13.5.40`
+        "user-agent": `Mozilla/5.0 (Linux; U; Android 10; zh-cn; MI 8 Build/QKQ1.190828.002) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/79.0.3945.147 Mobile Safari/537.36 XiaoMi/MiuiBrowser/13.5.40`
       }
     }
     $.get(options, (err, resp, data) => {
@@ -289,10 +276,10 @@ function taskUrl(token,venderId) {
           console.log(`\n${$.name}: API查询请求失败 ‼️‼️`)
           $.logErr(err);
         } else {
-          //console.log(data)
-          data = JSON.parse(/{(.*)}/g.exec(data)[0])
-          console.log(`已签到：`+data.data.days+`天`)
-          message +=`已签到：`+data.data.days+`天\n`
+            //console.log(data)
+            data = JSON.parse(/{(.*)}/g.exec(data)[0])
+            console.log(`已签到：`+data.data.days+`天`)
+            message +=`已签到：`+data.data.days+`天\n`
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -365,18 +352,6 @@ function jsonParse(str) {
       return [];
     }
   }
-}
-
-function randomString(e) {
-  e = e || 32;
-  let t = "abcdef0123456789", a = t.length, n = "";
-  for (i = 0; i < e; i++)
-    n += t.charAt(Math.floor(Math.random() * a));
-  return n
-}
-
-function getUA() {
-  $.UA = `jdapp;iPhone;10.2.2;13.1.2;${randomString(40)};M/5.0;network/wifi;ADID/;model/iPhone8,1;addressid/2308460611;appBuild/167863;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 13_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1;`
 }
 
 // prettier-ignore
