@@ -3,10 +3,11 @@ if (!["card","car"].includes(process.env.FS_LEVEL)) {
     return
 }
 /*
-#电脑配件ID任务jd_computer,自行加入以下环境变量，多个ID用@连接
+电脑配件ID任务jd_computer,自行加入以下环境变量，多个ID用@连接
 export computer_activityId="16"  
 
 即时任务，无需cron
+cron 0 0 * * *  jd_computer.js
 */
 
 const $ = new Env('电脑配件');
@@ -42,9 +43,9 @@ $.outFlag = 0
   }
   if (!activityIdList) {
     $.log(`没有电脑配件ID，尝试获取远程`);
-    let data = await getData("https://raw.githubusercontent.com/Ca11back/scf-experiment/master/json/computer.json")
+    let data = await getData("https://raw.githubusercontent.com/Ca11back/scf-experiment/master/json/computer3.json")
     if (!data) {
-        data = await getData("https://raw.fastgit.org/Ca11back/scf-experiment/master/json/computer.json")
+        data = await getData("https://raw.fastgit.org/Ca11back/scf-experiment/master/json/computer3.json")
     }
     if (data && data.length) {
         $.log(`获取到远程且有数据`);
