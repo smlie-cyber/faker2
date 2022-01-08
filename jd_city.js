@@ -42,11 +42,11 @@ if ($.isNode()) {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
-const author_codes = ['oeD9UaQEYm1CYRGrCpeJ95PhSEZ5'].sort(() => 0.5 - Math.random())
+let author_codes = ['oeD9UaQEYm1CYRGrCpeJ95PhSEZ5'].sort(() => 0.5 - Math.random())
 const self_code = []
 let pool = []
 !(async () => {
-  // console.log('内部互助城城现在改为优先助力池子!(作者只吃第一个CK,其余内部 请查看群内频道通知!,5s后开始!')
+  // console.log('内部互助没奖励了吧应该. 城城现在改为优先助力池子!(作者只吃第一个CK,其余池子!) 请查看群内频道通知!,5s后开始!')
   // await $.wait(5000)
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
@@ -320,7 +320,7 @@ function shareCodesFormat() {
         exchangeFlag = process.env.JD_CITY_EXCHANGE || exchangeFlag;
       }
       if (process.env.CITY_SHARECODES) {
-        console.log('检测到助力码,优先内部互助.')
+        console.log('检测到助力码,优先. 内部互助0.01了吧,删了吧.')
         if (process.env.CITY_SHARECODES.indexOf('\n') > -1) {
           $.newShareCodes = process.env.CITY_SHARECODES.split('\n');
         } else {
