@@ -1,6 +1,7 @@
 /*
 城城领现金
 
+暂无池子，忽略池子信息
 首个帐号助力作者池子在最后
 其余帐号优先向前内部互助
 有助力码环境变量则助力码在最前
@@ -45,7 +46,7 @@ const author_codes = ['oeD9UaQEYm1CYRGrCpeJ95PhSEZ5'].sort(() => 0.5 - Math.rand
 const self_code = []
 let pool = []
 !(async () => {
-  // console.log('内部互助城城现在改为优先助力池子!(作者只吃第一个CK,其余内部!) 请查看群内频道通知!,5s后开始!')
+  // console.log('内部互助城城现在改为优先助力池子!(作者只吃第一个CK,其余内部 请查看群内频道通知!,5s后开始!')
   // await $.wait(5000)
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
@@ -61,6 +62,13 @@ let pool = []
   //   cookiesArr = cookiesArr.sort(() => 0.5 - Math.random())
   //   console.log('CK顺序打乱!用来随机内部互助!,如需关闭CT_R为false')
   // }
+  let res = await getAuthorShareCode('https://raw.githubusercontent.com/shufflewzc/updateTeam/main/shareCodes/city.json')
+  if (!res) {
+    res = await getAuthorShareCode('https://raw.fastgit.com/shufflewzc/updateTeam/main/shareCodes/city.json')
+  }
+  if (res) {
+    author_codes = res.sort(() => 0.5 - Math.random())
+  }
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -125,6 +133,27 @@ let pool = []
   .finally(() => {
     $.done();
   })
+
+function getAuthorShareCode(url) {
+  return new Promise(async resolve => {
+    const options = {
+      url: `${url}?${new Date()}`, "timeout": 10000, headers: {
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      }
+    };
+    $.get(options, async (err, resp, data) => {
+      try {
+        resolve(JSON.parse(data))
+      } catch (e) {
+        // $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+    await $.wait(10000)
+    resolve();
+  })
+}
 
 function taskPostUrl(functionId,body) {
   return {
@@ -291,7 +320,7 @@ function shareCodesFormat() {
         exchangeFlag = process.env.JD_CITY_EXCHANGE || exchangeFlag;
       }
       if (process.env.CITY_SHARECODES) {
-        console.log('检测到内部助力码,优先进行内部互助.')
+        console.log('检测到助力码,优先内部互助.')
         if (process.env.CITY_SHARECODES.indexOf('\n') > -1) {
           $.newShareCodes = process.env.CITY_SHARECODES.split('\n');
         } else {
@@ -300,7 +329,7 @@ function shareCodesFormat() {
       }
     }
     // if ($.index - 1 == 0) {
-    //   console.log('首个帐号,助力作者')
+    //   console.log('首个帐号,助力作者和池子')
     //   $.newShareCodes = [...new Set([...$.newShareCodes,...author_codes, ...pool])];
     // } else {
     //   console.log('非首个个帐号,优先向前助力')
@@ -308,7 +337,7 @@ function shareCodesFormat() {
     // }
     if ($.index == 1) {
       console.log('首个帐号,助力作者和池子')
-      $.newShareCodes = [...new Set([...author_codes,...pool,...$.newShareCodes])]
+      $.newShareCodes = [...new Set([...author_codes,...$.newShareCodes])]
     } else{
       // console.log('非首个帐号,助力池子')
       // $.newShareCodes = [...new Set([...$.newShareCodes,...pool])]
