@@ -64,7 +64,7 @@ let pool = []
   // }
   let res = await getAuthorShareCode('https://raw.githubusercontent.com/shufflewzc/updateTeam/main/shareCodes/city.json')
   if (!res) {
-    res = await getAuthorShareCode('https://raw.fastgit.com/shufflewzc/updateTeam/main/shareCodes/city.json')
+    res = await getAuthorShareCode('https://raw.fastgit.org/shufflewzc/updateTeam/main/shareCodes/city.json')
   }
   if (res) {
     author_codes = res.sort(() => 0.5 - Math.random())
