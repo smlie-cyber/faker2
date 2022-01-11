@@ -188,8 +188,8 @@ function getJxNc(){
       },
     };
   }
-
-  return new Promise(resolve => {
+  
+/*   return new Promise(resolve => {
     $.get(
       JXNC_taskurl('query', `type=1`),
       async (err, resp, data) => {
@@ -225,7 +225,8 @@ function getJxNc(){
         }
       }
     );
-  })
+  }) */
+  
 }
 
 function getJdPet(){
