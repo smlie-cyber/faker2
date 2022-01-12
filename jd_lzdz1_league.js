@@ -141,6 +141,7 @@ async function superFans() {
                             );
                         }
                         await $.wait(1000);
+                        await getFirstLZCK()
                         await task(
                             "shop/league/checkOpenCard",
                             `activityId=${$.activityId}&actorUuid=${$.actorUuid}&shareUuid=${$.authorCode
@@ -148,7 +149,7 @@ async function superFans() {
                         );
                         await $.wait(1000);
                     }
-
+                    await getFirstLZCK()
                     $.log("\n加入购物车")
                     if (!$.activityContent['addSku'].allStatus) {
                         await task('shop/league/saveTask', `activityId=${$.activityId}&pin=${encodeURIComponent($.secretPin)}&actorUuid=${$.actorUuid}&shareUuid=${encodeURIComponent($.authorCode)}&taskType=2&taskValue=2`)
