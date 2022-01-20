@@ -1,7 +1,7 @@
 ## 重要通知
 ### 落霞与孤鹜齐飞,秋水共长天一色。
 
-Faker自用仓库，脚本收集者。每天更新全网可用脚本。
+Faker自用仓库，脚本收集者。
 
 #### [交流频道](https://t.me/pandaqx)
 
@@ -9,19 +9,12 @@ Faker自用仓库，脚本收集者。每天更新全网可用脚本。
 
 
 
-
+【注意】拉库地址已经更新，拉库前请打开青龙面板-配置文件 第18行 GithubProxyUrl="" 双引号中的内容去掉即可
 
 【青龙拉库命令】
-ql repo https://ghproxy.com/https://github.com/shufflewzc/faker2.git "jd_|jx_|gua_|jddj_|getJDCookie" "activity|backUp" "^jd[^_]|USER|function|utils|sendNotify|ZooFaker_Necklace.js|JDJRValidator_|sign_graphics_validate|ql|JDSignValidator"
+ql repo https://github.com.cnpmjs.org/shufflewzc/faker2.git "jd_|jx_|gua_|jddj_|getJDCookie" "activity|backUp" "^jd[^_]|USER|function|utils|sendNotify|ZooFaker_Necklace.js|JDJRValidator_|sign_graphics_validate|ql|JDSignValidator"
 
-【圈x】
-
-https://ghproxy.com/https://raw.githubusercontent.com/shufflewzc/faker/main/qx.json
-
-【QX教程】
-https://www.notion.so/Quantumult-X-cd78c6ab616e4ebf947519b2dd690a0c
-
-【青龙教程】
+【青龙使用说明】
 https://www.notion.so/Cent-OS-7-6-1c598629675145988b43a37998a1604a
 
 
